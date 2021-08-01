@@ -53,29 +53,56 @@ class HeuristicAgent:
     def get_agent_name(self):
         return self.agent_name
 
-    @staticmethod
-    def get_patterns(observation, pairs):
+    def get_patterns(self, observation, pairs):
+        """
+        this function will get the patterns for the move for each move will assign a specific score
+        :param observation:
+        :param pairs:
+        :return:
+        """
         last_row = 5
         last_col = 6
         first_col = 0
+        scores = list()
         for pair in pairs:
-            if pair[0] == last_row and pair[1] == last_col:
+            if pair[0] == last_row or pair[1] == last_col:
                 # check the left
-                print("left", pair)
-                print(observation[pair[0]][pair[1]-1])
-            elif pair[0] == last_row and pair[1] == first_col:
+                if observation[pair[0]][pair[1]-1] == self.get_piece():
+                    score = 100
+                    scores.append((pair, score))
+            elif pair[0] == last_row or pair[1] == first_col:
                 # check only the right
-                print("right", pair)
-                print(observation[pair[0]][pair[1]+1])
+                if observation[pair[0]][pair[1]+1] == self.get_piece():
+                    score = 101
+                    scores.append((pair, score))
+                    pass
+                pass
             elif pair[1] == last_col:
                 # check only the left, diagonal and the down
-                print("left diagonal down", pair)
+                if observation[pair[0]][pair[1]-1] == self.get_piece() or observation[pair[0]-1][pair[1]] == \
+                        self.get_piece() or observation[pair[0]+1][pair[1]-1] == self.get_piece():
+                    score = 102
+                    scores.append((pair, score))
+                    pass
+                pass
             elif pair[1] == first_col:
                 # check only the right, diagonal and the down
-                print("right diagonal down", pair)
+                if observation[pair[0]][pair[1]+1] == self.get_piece() or observation[pair[0]-1][pair[1]] == \
+                        self.get_piece() or observation[pair[0]+1][pair[1]+1] == self.get_piece():
+                    score = 103
+                    scores.append((pair, score))
+                    pass
+                pass
             else:
                 # check left, right both diagonal and down
-                print("else:", pair)
+                if observation[pair[0]][pair[1]-1] == self.get_piece() or observation[pair[0]][pair[1]+1] == \
+                        self.get_piece() or observation[pair[0]+1][pair[1]-1] == self.get_piece() or \
+                        observation[pair[0]+1][pair[1]-1] == self.get_piece() or observation[pair[0]-1][pair[1]]:
+                    score = 104
+                    scores.append((pair, score))
+                    pass
+                pass
+        return scores
 
     @staticmethod
     def action(observation, dimension=None):
