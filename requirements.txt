@@ -1,0 +1,5 @@
+  
+numpy==1.21.1
+random==3.9.6
+itertools
+operator
