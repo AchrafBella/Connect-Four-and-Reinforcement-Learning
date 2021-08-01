@@ -1,14 +1,14 @@
 from environment import Env
-from agent import Agent
-
+from agent import Agent, HeuristicAgent
 
 if __name__ == "__main__":
 
     Env = Env()
     agent1 = Agent('agent1', 1)
-    agent2 = Agent('agent2', 2)
+    agent2 = HeuristicAgent('hur agent', 2)
 
-    epochs = 22
+    # the maximum number of places
+    epochs = 42
     for i in range(epochs):
         if Env.check_game_over():
             break
