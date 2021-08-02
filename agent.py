@@ -37,6 +37,37 @@ class Agent:
                 return row, col
 
 
+class AgentLeftMost:
+    """"
+    this agent use a strategy that consists of playing the piece on the left
+    """
+    def __init__(self, agent_name, piece):
+        self.agent_name = agent_name
+        self.piece = piece
+        pass
+
+    def get_piece(self):
+        return self.piece
+
+    def get_agent_name(self):
+        return self.agent_name
+
+    @staticmethod
+    def action(observation, dimension):
+        """
+        :param observation:
+        :param dimension
+        :return:
+        """
+        for col_ in range(dimension[1]):
+            for row_ in reversed(range(dimension[0])):
+                if observation[row_][col_] == 0:
+                    return row_, col_
+                pass
+            pass
+        pass
+
+
 class HeuristicAgent:
     """
     this agent will use a heuristic that make choose wisely the place of piece by looking all the vacant
