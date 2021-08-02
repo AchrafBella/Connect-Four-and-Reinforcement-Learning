@@ -12,7 +12,7 @@ class Env:
         self.__dimension = dimension
         self.__board = np.zeros(self.__dimension)
         self.__game_over = False
-        self.__message = None
+        self.__winner = None
 
     def drop_piece(self, row, column, piece):
         """
@@ -50,7 +50,7 @@ class Env:
         """
         if not np.any(self.__board == 0):
             self.__game_over = True
-            self.__message = 'Game is over no one won'
+            self.__winner = 'Game is over no one won'
 
     def check_wining_move(self, agent):
         """
@@ -69,7 +69,7 @@ class Env:
                 if self.__board[r][c] == agent.get_piece() and self.__board[r + 1][c] == agent.get_piece() \
                         and self.__board[r + 2][c] == agent.get_piece() and self.__board[r + 3][c] == agent.get_piece():
                     self.__game_over = True
-                    self.__message = agent.get_agent_name() + ' win with a 4 piece in vertical'
+                    self.__winner = agent.get_agent_name()
                     pass
                 pass
             pass
@@ -80,7 +80,7 @@ class Env:
                 if self.__board[r][c] == agent.get_piece() and self.__board[r][c + 1] == agent.get_piece() \
                         and self.__board[r][c + 2] == agent.get_piece() and self.__board[r][c + 3] == agent.get_piece():
                     self.__game_over = True
-                    self.__message = agent.get_agent_name() + ' win with a 4 piece in horizontal'
+                    self.__winner = agent.get_agent_name()
                     pass
                 pass
             pass
@@ -92,7 +92,7 @@ class Env:
                         and self.__board[r - 2][c + 2] == agent.get_piece() and self.__board[r - 3][c + 3] == \
                         agent.get_piece():
                     self.__game_over = True
-                    self.__message = agent.get_agent_name() + ' win with a 4 piece in negative diagonal'
+                    self.__winner = agent.get_agent_name()
                     pass
                 pass
             pass
@@ -104,7 +104,7 @@ class Env:
                         and self.__board[r + 2][c + 2] == agent.get_piece() and self.__board[r + 3][c + 3] == \
                         agent.get_piece():
                     self.__game_over = True
-                    self.__message = agent.get_agent_name() + ' win with a 4 piece in positive diagonal'
+                    self.__winner = agent.get_agent_name()
                     pass
                 pass
             pass
@@ -130,13 +130,37 @@ class Env:
 
             self.drop_piece(row1, col1, agent1.get_piece())
             self.drop_piece(row2, col2, agent2.get_piece())
-        return self.__message
+        return self.__winner
 
-    def get_agent1_wins(self):
-        pass
+    def __reset_configuration(self):
+        """
+        :return:
+        """
+        self.__board = np.zeros(self.__dimension)
+        self.__game_over = False
+        self.__winner = None
 
-    def get_agent2_wins(self):
-        pass
+    def run(self, agent1, agent2, rounds=100):
+        """
+        This function will
+        :param agent1:
+        :param agent2:
+        :param rounds:
+        :return:
+        """
+        agent1_pct = 0
+        agent2_pct = 0
+        for _ in range(rounds):
+            self.__reset_configuration()
+            self.battle(agent1, agent2)
+            winner = self.__winner
+            if winner == agent1.get_agent_name():
+                agent1_pct += 1
+            elif winner == agent2.get_agent_name():
+                agent2_pct += 1
+
+        print("agent: {}  percentage of winning {}%".format(agent1.get_agent_name(), (agent1_pct/rounds)*100))
+        print("agent: {}  percentage of winning {}%".format(agent2.get_agent_name(), (agent2_pct/rounds)*100))
 
     def get_dimension(self):
         return self.__dimension
@@ -147,8 +171,8 @@ class Env:
     def get_game_state(self):
         return self.__game_over
 
-    def get_message(self):
-        return self.__message
+    def get_winner(self):
+        return self.__winner
 
     def display_env(self):
         print(*self.__board, sep='\n')
