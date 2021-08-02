@@ -13,3 +13,4 @@ the class agent contains 3 types of the agents for the moment (it could be more 
 * agent: this is the naive agent that use a uniform distrubition to choose the next vacant place to drop the piece
 * agent leftmost: this is use a strategy that consists of play the piece on the left 
 * HeuristicAgent: i considre this agent as the most intelligent one because he uses a Heuristic that find patters that helps him to win easily against them (i didn't include the possibility to lame the attack of the opponent in this version=0.5)
+* The next agent will use deep reinforcement learning
