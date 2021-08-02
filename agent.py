@@ -53,55 +53,104 @@ class HeuristicAgent:
     def get_agent_name(self):
         return self.agent_name
 
-    def get_patterns(self, observation, pairs):
+    def get_patterns(self, observation, pairs, dimension):
         """
         this function will get the patterns for the move for each move will assign a specific score
         :param observation:
         :param pairs:
+        :param dimension:
         :return:
         """
-        last_row = 5
-        last_col = 6
-        first_col = 0
         scores = list()
+        last_row, last_col = dimension[0]-1, dimension[1]-1
+        first_col = 0
         for pair in pairs:
-            if pair[0] == last_row or pair[1] == last_col:
+            if pair[0] == last_row and pair[1] == last_col:
                 # check the left
                 if observation[pair[0]][pair[1]-1] == self.get_piece():
-                    score = 100
+                    score = "check left"
                     scores.append((pair, score))
-            elif pair[0] == last_row or pair[1] == first_col:
+                else:
+                    score = "free place"
+                    scores.append((pair, score))
+
+            elif pair[0] == last_row and pair[1] == first_col:
                 # check only the right
                 if observation[pair[0]][pair[1]+1] == self.get_piece():
-                    score = 101
+                    score = "check right"
                     scores.append((pair, score))
-                    pass
-                pass
+                else:
+                    score = "free place"
+                    scores.append((pair, score))
+
+            elif pair[0] == last_row:
+                # check right, left and both diagonal
+                if observation[pair[0]][pair[1]+1] == self.get_piece():
+                    score = "check right"
+                    scores.append((pair, score))
+                elif observation[pair[0]][pair[1]-1] == self.get_piece():
+                    score = "check left"
+                    scores.append((pair, score))
+                elif observation[pair[0]-1][pair[1]+1] == self.get_piece():
+                    score = "check positive diagonal"
+                    scores.append((pair, score))
+                elif observation[pair[0]-1][pair[1]-1] == self.get_piece():
+                    score = "check negative diagonal"
+                    scores.append((pair, score))
+                else:
+                    score = "check all the condition above "
+                    scores.append((pair, score))
+
             elif pair[1] == last_col:
-                # check only the left, diagonal and the down
-                if observation[pair[0]][pair[1]-1] == self.get_piece() or observation[pair[0]-1][pair[1]] == \
-                        self.get_piece() or observation[pair[0]+1][pair[1]-1] == self.get_piece():
-                    score = 102
+                # check the down, left or diagonal
+                if observation[pair[0]][pair[1]-1] == self.get_piece():
+                    score = "check the left"
                     scores.append((pair, score))
-                    pass
-                pass
+                elif observation[pair[0]+1][pair[1]] == self.get_piece():
+                    score = "check the down"
+                    scores.append((pair, score))
+                elif observation[pair[0]+1][pair[1]-1] == self.get_piece():
+                    score = "check the positive diagonal"
+                    scores.append((pair, score))
+                else:
+                    score = "check all the condition above"
+                    scores.append((pair, score))
+
             elif pair[1] == first_col:
-                # check only the right, diagonal and the down
-                if observation[pair[0]][pair[1]+1] == self.get_piece() or observation[pair[0]-1][pair[1]] == \
-                        self.get_piece() or observation[pair[0]+1][pair[1]+1] == self.get_piece():
-                    score = 103
+                # check only the right, diagonal, the down and the opponent piece
+                if observation[pair[0]][pair[1]+1] == self.get_piece():
+                    score = "check the right"
                     scores.append((pair, score))
-                    pass
-                pass
+                elif observation[pair[0]+1][pair[1]] == self.get_piece():
+                    score = "check the down"
+                    scores.append((pair, score))
+                elif observation[pair[0]+1][pair[1]+1] == self.get_piece():
+                    score = "check the negative diagonal"
+                    scores.append((pair, score))
+                else:
+                    score = "check all the condition above"
+                    scores.append((pair, score))
+
             else:
-                # check left, right both diagonal and down
-                if observation[pair[0]][pair[1]-1] == self.get_piece() or observation[pair[0]][pair[1]+1] == \
-                        self.get_piece() or observation[pair[0]+1][pair[1]-1] == self.get_piece() or \
-                        observation[pair[0]+1][pair[1]-1] == self.get_piece() or observation[pair[0]-1][pair[1]]:
-                    score = 104
+                # check only the right, diagonal, the down and the opponent piece
+                if observation[pair[0]][pair[1] + 1] == self.get_piece():
+                    score = "check the right"
                     scores.append((pair, score))
-                    pass
-                pass
+                elif observation[pair[0]][pair[1]-1] == self.get_piece():
+                    score = "check the left"
+                    scores.append((pair, score))
+                elif observation[pair[0] + 1][pair[1]] == self.get_piece():
+                    score = "check the down"
+                    scores.append((pair, score))
+                elif observation[pair[0]+1][pair[1]+1] == self.get_piece():
+                    score = "check the negative diagonal"
+                    scores.append((pair, score))
+                elif observation[pair[0]+1][pair[1]-1] == self.get_piece():
+                    score = "check the positive diagonal"
+                    scores.append((pair, score))
+                else:
+                    score = "check all the condition above"
+                    scores.append((pair, score))
         return scores
 
     @staticmethod
