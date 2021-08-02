@@ -20,7 +20,8 @@ class Agent:
     def get_agent_name(self):
         return self.agent_name
 
-    def action(self, observation, dimension):
+    @staticmethod
+    def action(observation, dimension):
         """
         :param observation:
         :param dimension
@@ -33,7 +34,6 @@ class Agent:
         col = random.choice(columns)
         for row in reversed(range(dimension[0])):
             if observation[row][col] == 0:
-                print("row:", row, "col:", col, self.piece)
                 return row, col
 
 
@@ -156,7 +156,8 @@ class HeuristicAgent:
 
     def action(self, observation, dimension):
         if np.all(observation == 0):
-            return 5, random.randint(0, 6)
+            row, col = 5, random.randint(0, 6)
+            return row, col
         vacant_places = np.argwhere(observation == 0)
         s_vacant_places = sorted(vacant_places, key=itemgetter(1))
         gs = it.groupby(s_vacant_places, key=itemgetter(1))
