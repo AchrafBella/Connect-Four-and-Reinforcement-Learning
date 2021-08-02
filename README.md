@@ -8,4 +8,4 @@ Run pip install -r requirements.txt (Python 2), or pip3 install -r requirements.
 
 Concepts
 -----------
-This project contains 2 main classes: Env this classe represent the environment of the the agent, and another class agent as the name implies it contains the intelligent agents. 
+This project contains 2 main classes: Env this classe represent the environment of the the agent which means the game, and another class agent as the name implies it contains the agents.
