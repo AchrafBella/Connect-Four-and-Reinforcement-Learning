@@ -111,6 +111,27 @@ class Env:
 
         return self.__game_over
 
+    def battle(self, agent1, agent2):
+        """
+        :param agent1:
+        :param agent2:
+        :return:
+        """
+        epochs = 42
+        for i in range(epochs):
+            if self.check_game_over():
+                break
+            if self.check_wining_move(agent1):
+                break
+            if self.check_wining_move(agent2):
+                break
+            row1, col1 = agent1.action(self.__board, self.__dimension)
+            row2, col2 = agent2.action(self.__board, self.__dimension)
+
+            self.drop_piece(row1, col1, agent1.get_piece())
+            self.drop_piece(row2, col2, agent2.get_piece())
+        return self.__message
+
     def get_agent1_wins(self):
         pass
 
