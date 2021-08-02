@@ -1,5 +1,6 @@
 # Game-AI-and-Reinforcement-Learning
-In this project i tired to build a smart agent using Reinforcement Learning concept. I build the Four game (aka  Four in a Row) Also, i provided some agents with specific specific properties.
+-------------------------------------
+In this project i tired to implement the well-known game Connect Four  (aka  Four in a Row) using Reinforcement Learning concepts. Also, i provided some agents with specific properties.
 
 
 Requirements
