@@ -14,3 +14,12 @@ the class agent contains 3 types of the agents for the moment (it could be more 
 * agent leftmost: this is use a strategy that consists of play the piece on the left 
 * HeuristicAgent: i considre this agent as the most intelligent one because he uses a Heuristic that find patters that helps him to win easily against them (i didn't include the possibility to lame the attack of the opponent in this version=0.5)
 * The next agent will use deep reinforcement learning
+
+
+Result
+-----------
+Simple battle result between:
+- random agents
+- left agents
+- heuristic agents
+![image](https://user-images.githubusercontent.com/52492864/128024170-b75ccee1-f253-4464-8a95-d635a98e4a56.png)
