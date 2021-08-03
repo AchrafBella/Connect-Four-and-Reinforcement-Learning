@@ -10,9 +10,10 @@ Concepts
 -----------
 This project contains 2 main classes: Env this classe represent the environment of the the agent which means the game, and another class agent as the name implies it contains the agents.
 
-Concerning the environment of the game connect for i used an array (Python object) that represent the field
-![conenct four](https://user-images.githubusercontent.com/52492864/128043941-261e3b4e-b248-4c40-ac30-bb6d263d830a.PNG)
-![connectfourV](https://user-images.githubusercontent.com/52492864/128043965-8afcfd0e-7072-496b-9aa8-f0d1555ef599.PNG)
+Concerning the environment of the game connect for modeling it, i used an array (Python object) that represent the field where the first piece is 1 and the second is 2.
+
+![image](https://user-images.githubusercontent.com/52492864/128045136-8107d272-0b02-454a-bb0f-932d1079ec9f.png)
+
 
 
 
