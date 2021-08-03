@@ -22,4 +22,6 @@ Simple battle result between:
 - random agents
 - left agents
 - heuristic agents
+
+
 ![image](https://user-images.githubusercontent.com/52492864/128024170-b75ccee1-f253-4464-8a95-d635a98e4a56.png)
