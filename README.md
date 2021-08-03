@@ -9,6 +9,14 @@ Run pip install -r requirements.txt (Python 2), or pip3 install -r requirements.
 Concepts
 -----------
 This project contains 2 main classes: Env this classe represent the environment of the the agent which means the game, and another class agent as the name implies it contains the agents.
+
+Concerning the environment of the game connect for i used an array (Python object) that represent the field
+![conenct four](https://user-images.githubusercontent.com/52492864/128043941-261e3b4e-b248-4c40-ac30-bb6d263d830a.PNG)
+![connectfourV](https://user-images.githubusercontent.com/52492864/128043965-8afcfd0e-7072-496b-9aa8-f0d1555ef599.PNG)
+
+
+
+
 the class agent contains 3 types of the agents for the moment (it could be more in the futur)
 * agent: this is the naive agent that use a uniform distrubition to choose the next vacant place to drop the piece
 * agent leftmost: this is use a strategy that consists of play the piece on the left 
