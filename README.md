@@ -15,7 +15,7 @@ Concerning the environment of the game connect for modeling it, i used an array 
 ![image](https://user-images.githubusercontent.com/52492864/128045136-8107d272-0b02-454a-bb0f-932d1079ec9f.png)
 
 
-
+Also the environement is design for all the simple agents, the heuristic agents and the RL agents
 
 
 the class agent contains 3 types of the agents for the moment (it could be more in the futur)
@@ -23,6 +23,11 @@ the class agent contains 3 types of the agents for the moment (it could be more 
 * agent leftmost: this is use a strategy that consists of play the piece on the left 
 * HeuristicAgent: i considre this agent as the most intelligent one because he uses a Heuristic that find patters that helps him to win easily against them (i didn't include the possibility to lame the attack of the opponent in this version=0.5)
 * The next agent will use deep reinforcement learning
+
+
+Main Components Needed by the RL Agent:
+-----------
+For that we should upgrad the environment
 
 
 Result
