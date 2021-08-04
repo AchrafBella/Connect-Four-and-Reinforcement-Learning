@@ -44,3 +44,9 @@ Simple battle result between:
 
 
 ![image](https://user-images.githubusercontent.com/52492864/128024170-b75ccee1-f253-4464-8a95-d635a98e4a56.png)
+
+I kept the first result that i get to show you the advancement of the project.
+Here we can reward the agents based on how they did well or not as well as see the percentage of win.
+
+![image](https://user-images.githubusercontent.com/52492864/128155209-2de5a2d6-1b72-4e6a-9849-92bb9bb0f60a.png)
+
