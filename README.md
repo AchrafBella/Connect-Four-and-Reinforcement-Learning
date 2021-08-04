@@ -3,7 +3,7 @@
 In this project i tired to implement the well-known game Connect 4  (aka  Four in a Row) using Reinforcement Learning concepts. Also, i provided some agents with specific properties.
 
 The reward system is as the following:
-- Each time the agent won a game he will recieve a reward of +1  
+- Each time the agent win a game he will recieve a reward of +1  
 - Each time the agent lost a game he will punch by -1
 - he will get +1/42 for simple move
 - he will punch by -10 if the game is over by filling all the vacant place in the board 
