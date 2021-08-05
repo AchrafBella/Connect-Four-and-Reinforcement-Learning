@@ -37,7 +37,7 @@ Number of states that the input array has = (number of different values every it
 Already the number of state for 1 vacant place is 3 (empty, 1, 2)
 Then the number of states is 3^(6*7) = 3^42 = 109418989131512359209
 
-As we use Q-learning the Q-table size would be action*109418989131512359209
+As we use Q-learning the Q-table size would be the number of actions * 109418989131512359209 where the action is the choice of the column
 
 Requirements
 -----------
