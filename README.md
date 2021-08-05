@@ -40,10 +40,11 @@ Result
 
 The result for a battle between random agents
 -----------
-![image](https://user-images.githubusercontent.com/52492864/128413660-b2f2df5a-1c12-4817-9519-696b8de8fe49.png)
+![image](https://user-images.githubusercontent.com/52492864/128414016-696e6246-ac46-4da5-a041-236009633cd0.png)
 
-The result for a 6 rounds between random agents
+The result for a 3 rounds between random agents
 -----------
+![image](https://user-images.githubusercontent.com/52492864/128414104-a161818d-3ccd-41bd-942f-3ef12ef893db.png)
 
 
 - left agents
