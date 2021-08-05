@@ -190,8 +190,7 @@ class HeuristicAgent:
             row, col = 5, random.randint(0, 6)
             return row, col
         vacant_places = np.argwhere(observation == 0)
-        s_vacant_places = sorted(vacant_places, key=itemgetter(1))
-        gs = it.groupby(s_vacant_places, key=itemgetter(1))
+        gs = it.groupby(vacant_places, key=itemgetter(1))
         valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
         move = max(self.get_patterns(observation, valid_moves, dimension), key=itemgetter(1))
         row, col = move[0]

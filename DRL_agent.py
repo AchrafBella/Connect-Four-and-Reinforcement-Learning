@@ -28,14 +28,14 @@ class EnvGym(Env):
             row1, col1 = agent1.action(self.__board, self.__dimension)
             row2, col2 = agent2.action(self.__board, self.__dimension)
             X
-            self.drop_piece(row1, col1, agent1.get_piece())
-            self.drop_piece(row2, col2, agent2.get_piece())
+            self.__drop_piece(row1, col1, agent1.get_piece())
+            self.__drop_piece(row2, col2, agent2.get_piece())
         return self.__winner
 
     def reset(self):
-        self.reset_configuration()
+        self.___reset_configuration()
 
-    def reward(self, agent1, agent2):
+    def __reward(self, agent1, agent2):
         """
         for each action done by the agent he receive a reward based on the result
         :param agent1:
@@ -63,6 +63,6 @@ class EnvGym(Env):
         reward_agent1 = 0
         reward_agent2 = 0
         self.battle(agent1=self.agent1, agent2=self.agent2)
-        reward_agent1 += self.reward(self.agent1, self.agent2)
-        reward_agent2 += self.reward(self.agent1, self.agent2)
+        reward_agent1 += self.__reward(self.agent1, self.agent2)
+        reward_agent2 += self.__reward(self.agent1, self.agent2)
         print(reward_agent1, reward_agent2)

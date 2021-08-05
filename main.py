@@ -8,7 +8,8 @@ if __name__ == "__main__":
 
     env = Env({'agent1': agent1, 'agent2': agent1_})
     cumulative_reward_agent_1, cumulative_reward_agent_2 = env.run()
-    env.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
+    # env.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
+    env.display_board()
     print("_"*50)
 
     agent2 = HeuristicAgent('hur agent 1', 1)
@@ -16,7 +17,7 @@ if __name__ == "__main__":
 
     env1 = Env({'agent1': agent2, 'agent2': agent2_})
     cumulative_reward_agent_1, cumulative_reward_agent_2 = env1.run()
-    env1.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
+    # env1.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
     print("_"*50)
 
     agent3 = AgentLeftMost('left agent 1', 1)
@@ -24,5 +25,5 @@ if __name__ == "__main__":
 
     env3 = Env({'agent1': agent3, 'agent2': agent3_})
     cumulative_reward_agent_1, cumulative_reward_agent_2 = env3.run()
-    env3.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
+    # env3.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
     print("_"*50)

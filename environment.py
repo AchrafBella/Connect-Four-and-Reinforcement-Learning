@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 class Env:
-    def __init__(self, agents=dict(), dimension=(6, 7)):
+    def __init__(self, dimension=(6, 7)):
         """
         This class represent the game environment
         we have to respect that the first drop of peace should be in the bottom
@@ -17,29 +17,36 @@ class Env:
         * step function: which is the action taken by the agent
 
         :param dimension: the dimension represent the board limits
-        :param agents: a dict that contains the players/agents
         """
         self.__dimension = dimension
         self.__board = np.zeros(self.__dimension)
-
-        self.__game_over = False
         self.__winner = None
 
-        self.__agent1 = agents.get('agent1', None)
-        self.__agent2 = agents.get('agent2', None)
-
-    def reset_configuration(self):
+    def __reset_configuration(self):
         """
         :return:
         """
         self.__board = np.zeros(self.__dimension)
-        self.__game_over = False
         self.__winner = None
 
-    def get_agents(self):
-        return {'agent1': self.__agent1, 'agent2': self.__agent2}
+    def __valid_location(self, row, column):
+        """
+        :param row:
+        :param column:
+        :return:
+        """
+        return self.__board[row][column] == 0
 
-    def drop_piece(self, row, column, piece):
+    def __get_next_valid_location(self, column):
+        """
+        :param column:
+        :return: valid row
+        """
+        for row in reversed(range(self.__dimension[0])):
+            if self.__valid_location(row, column):
+                return row
+
+    def __drop_piece(self, row, column, piece):
         """ Action
         A specific function for the agents
         :param row:
@@ -55,15 +62,18 @@ class Env:
         """ Action
         A specific function designed for the human player
         :param piece:
+        :param row:
         :return:
         """
         row = 5
         column = int(input('Your turn: please choose a column: '))
-        if column >= 7 or column < 0:
-            raise PieceMisplaced
-        if self.__board[row][column] != 0:
-            row -= 1
-        self.__board[row][column] = piece
+        if column >= 7 or column < 0 or np.all((self.__board != 0), axis=0)[column]:
+            raise PieceMisplaced("Please check the column you want to put your piece in")
+        if self.__valid_location(row, column):
+            self.__board[row][column] = piece
+        else:
+            row = self.__get_next_valid_location(column)
+            self.__board[row][column] = piece
 
     def check_game_over(self):
         """
@@ -71,7 +81,7 @@ class Env:
         :return:
         """
         if not np.any(self.__board == 0):
-            self.__game_over = True
+            return True
 
     def check_wining_move(self, agent):
         """
@@ -79,16 +89,15 @@ class Env:
         we are going to check if there is 4 peaces  horizontally sloped diagonals then, game is over
         we are going to check if there is 4 peaces  positively&negatively sloped diagonals then, game is over
         :param agent: the agent
-        :return: the winner
+        :return: boolean to know if we won the game or not yet
         """
         # check vertical locations
         for r in range(self.__dimension[0] - 3):
             for c in range(self.__dimension[1]):
                 if self.__board[r][c] == agent.get_piece() and self.__board[r + 1][c] == agent.get_piece() \
                         and self.__board[r + 2][c] == agent.get_piece() and self.__board[r + 3][c] == agent.get_piece():
-                    self.__game_over = True
-                    self.__winner = agent.get_agent_name()
-                    pass
+                    self.__winner = agent
+                    return True
                 pass
             pass
 
@@ -97,9 +106,8 @@ class Env:
             for c in range(self.__dimension[1] - 3):
                 if self.__board[r][c] == agent.get_piece() and self.__board[r][c + 1] == agent.get_piece() \
                         and self.__board[r][c + 2] == agent.get_piece() and self.__board[r][c + 3] == agent.get_piece():
-                    self.__game_over = True
-                    self.__winner = agent.get_agent_name()
-                    pass
+                    self.__winner = agent
+                    return True
                 pass
             pass
 
@@ -109,9 +117,8 @@ class Env:
                 if self.__board[r][c] == agent.get_piece() and self.__board[r - 1][c + 1] == agent.get_piece() \
                         and self.__board[r - 2][c + 2] == agent.get_piece() and self.__board[r - 3][c + 3] == \
                         agent.get_piece():
-                    self.__game_over = True
-                    self.__winner = agent.get_agent_name()
-                    pass
+                    self.__winner = agent
+                    return True
                 pass
             pass
 
@@ -121,91 +128,103 @@ class Env:
                 if self.__board[r][c] == agent.get_piece() and self.__board[r + 1][c + 1] == agent.get_piece() \
                         and self.__board[r + 2][c + 2] == agent.get_piece() and self.__board[r + 3][c + 3] == \
                         agent.get_piece():
-                    self.__game_over = True
-                    self.__winner = agent.get_agent_name()
-                    pass
+                    self.__winner = agent
+                    return True
                 pass
             pass
 
-        return self.__game_over
-
-    def reward(self, agent, other_agent):
+    def __reward(self, agent, other_agent):
+        """
+        this is the reward per turn
+        :param agent:
+        :param other_agent:
+        :return:
+        """
         reward = 0
         if self.check_wining_move(agent):
             reward += 1
         elif self.check_wining_move(other_agent):
             reward -= 1
-        elif self.check_game_over():
-            reward -= 10
         else:
             reward += 1/42
         return reward
 
-    def play_round(self):
+    def play_round(self, agent1, agent2):
         """
-        To avoid any argument with the agents we are going to flip a coin to decide who goes first
-        :return:
+        * we should set who play first randomly
+        * As the first player goes first we should check if he won and then assign the score
+        * If the first player didn't won in his turn then we check for the second player and we assign the score
+        * we set max_turn to 21 because the maximum number of vacant places is 42 and we play twice
+        :param agent1: the first agent
+        :param agent2: the second agent
+        :return: the winner, the score for the first player and the score of the second player
         """
-        first_player = np.random.choice([self.__agent1, self.__agent2])
-        second_player = self.__agent2 if first_player == self.__agent1 else self.__agent1
 
-        reward_agent_1 = 0
-        reward_agent_2 = 0
+        first_player = np.random.choice([agent1, agent2])
+        second_player = agent2 if first_player == agent1 else agent1
+        reward_agent1 = 0
+        reward_agent2 = 0
+        max_turn = 21
 
-        while True:
+        for turn in range(max_turn):
             if self.check_game_over():
-                break
-            elif self.check_wining_move(self.__agent1):
-                break
-            elif self.check_wining_move(self.__agent2):
                 break
 
             row1, col1 = first_player.action(self.__board, self.__dimension)
+            self.__drop_piece(row1, col1, first_player.get_piece())
+            reward_agent1 += self.__reward(first_player, second_player)
+
+            if self.check_wining_move(first_player):
+                break
+
             row2, col2 = second_player.action(self.__board, self.__dimension)
+            self.__drop_piece(row2, col2, second_player.get_piece())
+            reward_agent2 += self.__reward(second_player, first_player)
 
-            self.drop_piece(row1, col1, first_player.get_piece())
-            self.drop_piece(row2, col2, second_player.get_piece())
+            if self.check_wining_move(second_player):
+                break
 
-            reward_agent_1 += self.reward(self.__agent1, self.__agent2)
-            reward_agent_2 += self.reward(self.__agent2, self.__agent1)
+            # self.round_result(turn, first_player.get_agent_name(), row1, col1, reward_agent1)
+            # self.round_result(turn, second_player.get_agent_name(), row2, col2, reward_agent2)
 
-        return self.__winner, reward_agent_1, reward_agent_2
+        return self.__winner, first_player, second_player, reward_agent1, reward_agent2
 
-    def run(self, rounds=50):
+    def run(self, agent1, agent2, rounds=3):
         """
+        The Run function for abject to see how the agent will do when they play many times
+        :param agent1:
+        :param agent2:
         :param rounds:
         :return:
         """
+        cumulative_reward_agent1 = list()
+        cumulative_reward_agent2 = list()
+
         win_percentage_agent1 = 0
         win_percentage_agent2 = 0
 
-        cumulative_reward_agent_1 = list()
-        cumulative_reward_agent_2 = list()
-
         for _ in range(rounds):
-            self.reset_configuration()
-            winner, reward_agent_1, reward_agent_2 = self.play_round()
+            self.__reset_configuration()
+            winner, first_player, second_player, reward_agent1, reward_agent2 = self.play_round(agent1, agent2)
 
-            # the cumulative reward per agent
-            cumulative_reward_agent_1.append(reward_agent_1)
-            cumulative_reward_agent_2.append(reward_agent_2)
-
-            # the percentage win per agent
-            if winner == self.__agent1.get_agent_name():
+            if winner == first_player:
                 win_percentage_agent1 += 1
-            elif winner == self.__agent2.get_agent_name():
+            elif winner == second_player:
                 win_percentage_agent2 += 1
 
-        print("The cumulative reward for the agent {} is {}".format(self.__agent1.get_agent_name(),
-                                                                    sum(cumulative_reward_agent_1)))
-        print("The cumulative reward for the agent {} is {}".format(self.__agent2.get_agent_name(),
-                                                                    sum(cumulative_reward_agent_2)))
+            cumulative_reward_agent1.append(reward_agent1)
+            cumulative_reward_agent2.append(reward_agent2)
 
-        print("Agent: {}  percentage of winning {}%".format(self.__agent1.get_agent_name(),
-                                                            (win_percentage_agent1/rounds)))
-        print("Agent: {}  percentage of winning {}%".format(self.__agent2.get_agent_name(),
-                                                            (win_percentage_agent2/rounds)))
-        return cumulative_reward_agent_1, cumulative_reward_agent_2
+            # information to track the rounds
+            self.battle_result(first_player.get_agent_name(), (win_percentage_agent1/rounds)*100,
+                               sum(cumulative_reward_agent1))
+            self.battle_result(second_player.get_agent_name(), (win_percentage_agent2/rounds)*100,
+                               sum(cumulative_reward_agent2))
+            self.attribute(winner, first_player, second_player)
+            self.board_state()
+            print("_"*100)
+
+        return cumulative_reward_agent1, cumulative_reward_agent2
 
     def reward_visualization(self, reward1, reward2):
         fig, (ax1, ax2) = plt.subplots(1, 2)
@@ -225,14 +244,36 @@ class Env:
     def get_observation(self):
         return self.__board
 
-    def get_game_state(self):
-        return self.__game_over
-
     def get_winner(self):
         return self.__winner
 
-    def display_env(self):
+    def count_piece_in_board(self):
+        return np.count_nonzero(self.__board)
+
+    def display_board(self):
         print(*self.__board, sep='\n')
+
+    def board_state(self):
+        s = 'The winner is {} and {} piece dropped'.format(self.__winner.get_agent_name(), self.count_piece_in_board())
+        print(s)
+
+    @staticmethod
+    def attribute(winner, agent1, agent2):
+        if winner == agent1:
+            s = '{} won against {}'.format(agent1.get_agent_name(), agent2.get_agent_name())
+        elif winner == agent2:
+            s = '{} won against {}'.format(agent2.get_agent_name(), agent1.get_agent_name())
+        print(s)
+
+    @staticmethod
+    def round_result(turn, agent,row, col, score):
+        s = 'The {} in {} turn drop the piece in row={}, col={} with score: {}'.format(agent, turn, row, col, score)
+        print(s)
+
+    @staticmethod
+    def battle_result(agent, winning_rate, cumulative_reward):
+        s = '{} won {}% of rounds with {} cumulative of reward'.format(agent, winning_rate, cumulative_reward)
+        print(s)
 
 
 class PieceMisplaced(Exception):
