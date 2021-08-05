@@ -41,13 +41,17 @@ Requirements
 Results
 -----------
 
--The result for a battle between random agents
+The result for a battle between random agents
 -----------
 ![image](https://user-images.githubusercontent.com/52492864/128414016-696e6246-ac46-4da5-a041-236009633cd0.png)
 
--The result for a 3 rounds between random agents
+The result for a 3 rounds between random agents
 -----------
 ![image](https://user-images.githubusercontent.com/52492864/128414104-a161818d-3ccd-41bd-942f-3ef12ef893db.png)
+
+The plot of reward per round
+-----------
+![image](https://user-images.githubusercontent.com/52492864/128415712-5018a9ed-f8e8-4af5-b552-09e473ca42f0.png)
 
 
 - left agents
