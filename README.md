@@ -37,25 +37,15 @@ For that we should upgrad the environment
 
 Result
 -----------
-Simple battle result between:
-- random agents
+
+The result for a battle between random agents
+-----------
+![image](https://user-images.githubusercontent.com/52492864/128413660-b2f2df5a-1c12-4817-9519-696b8de8fe49.png)
+
+The result for a 6 rounds between random agents
+-----------
+
+
 - left agents
 - heuristic agents
-
-
-![image](https://user-images.githubusercontent.com/52492864/128024170-b75ccee1-f253-4464-8a95-d635a98e4a56.png)
-
-I kept the first result that i get to show you the advancement of the project.
-Here we can reward the agents based on how they did well or not as well as see the percentage of win.
-
-![image](https://user-images.githubusercontent.com/52492864/128187523-63505d9e-4e54-4f40-aec8-1d9f7523df89.png)
-
-![image](https://user-images.githubusercontent.com/52492864/128187353-c2b8cf2f-46d8-41e5-ae8b-1ce8b0bbaf5a.png)
-
-
-![image](https://user-images.githubusercontent.com/52492864/128187398-89750220-ed71-4277-a0a2-009ed6ced56b.png)
-
-
-![image](https://user-images.githubusercontent.com/52492864/128187458-c45a9e09-611b-4a99-bb36-e702ff269f6b.png)
-
 
