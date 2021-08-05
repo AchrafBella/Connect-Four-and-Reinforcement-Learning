@@ -35,7 +35,8 @@ Main Components Needed by the RL Agent:
 For that we should upgrad the environment
 
 
-Result
+
+Results
 -----------
 
 The result for a battle between random agents
