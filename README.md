@@ -10,6 +10,7 @@ For all these agent i build a reward system but specifically for the DRL Agent.
 The reward system is as the following:
 - Each time the agent win a game he will recieve a reward of +1.
 - Each time the agent lost a game he will punch by -1.
+- And -10 in case of draw / game over
 - he will get +1/42 for simple move
 
 
@@ -49,8 +50,7 @@ Results
 
 The result for a battle between random agents
 -----------
-![image](https://user-images.githubusercontent.com/52492864/128414016-696e6246-ac46-4da5-a041-236009633cd0.png)
-
+![image](https://user-images.githubusercontent.com/52492864/128442802-7c39ff96-b09b-40e8-847e-01d80aafa0bb.png)
 The result for a 3 rounds between random agents
 -----------
 ![image](https://user-images.githubusercontent.com/52492864/128414104-a161818d-3ccd-41bd-942f-3ef12ef893db.png)
