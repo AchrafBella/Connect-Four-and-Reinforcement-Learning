@@ -13,6 +13,9 @@ The reward system is as the following:
 - And -10 in case of draw / game over
 - he will get +1/42 for simple move
 
+Coding
+-----------
+During the coding i took into consideration all the case that could block the game either the full bord or the no vacant place and i used exception handling for that to pursuit the battle and i delete the score for this failed battle.
 
 Concepts
 -----------
