@@ -51,14 +51,14 @@ Results
 The result for a battle between random agents
 -----------
 ![image](https://user-images.githubusercontent.com/52492864/128442802-7c39ff96-b09b-40e8-847e-01d80aafa0bb.png)
+
 The result for a 3 rounds between random agents
 -----------
-![image](https://user-images.githubusercontent.com/52492864/128414104-a161818d-3ccd-41bd-942f-3ef12ef893db.png)
+![image](https://user-images.githubusercontent.com/52492864/128442954-77a97ec5-d4d0-43bb-911b-37e6d4771052.png)
 
 The plot of reward per round
 -----------
 ![image](https://user-images.githubusercontent.com/52492864/128442625-3b41b3fb-a1a6-45eb-ba57-257010d59748.png)
-
 
 - left agents
 - heuristic agents
