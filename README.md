@@ -57,7 +57,7 @@ The result for a 3 rounds between random agents
 
 The plot of reward per round
 -----------
-![image](https://user-images.githubusercontent.com/52492864/128430624-26bc1587-c004-42ba-a672-25d5ae0e3fd0.png)
+![image](https://user-images.githubusercontent.com/52492864/128442625-3b41b3fb-a1a6-45eb-ba57-257010d59748.png)
 
 
 - left agents
