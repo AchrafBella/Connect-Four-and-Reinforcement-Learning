@@ -9,16 +9,16 @@ class Agent:
     this agent represent a simple a approach that consist of using the hazard
     i call this the random agent
     """
-    def __init__(self, agent_name, piece):
-        self.agent_name = agent_name
-        self.piece = piece
+    def __init__(self, agent_name, disk):
+        self.__agent_name = agent_name
+        self.__disk = disk
         pass
 
-    def get_piece(self):
-        return self.piece
+    def get_disk(self):
+        return self.__disk
 
     def get_agent_name(self):
-        return self.agent_name
+        return self.__agent_name
 
     @staticmethod
     def action(observation, dimension):
@@ -41,16 +41,16 @@ class AgentLeftMost:
     """"
     this agent use a strategy that consists of playing the piece on the left
     """
-    def __init__(self, agent_name, piece):
-        self.agent_name = agent_name
-        self.piece = piece
+    def __init__(self, agent_name, disk):
+        self.__agent_name = agent_name
+        self.__disk = disk
         pass
 
-    def get_piece(self):
-        return self.piece
+    def get_disk(self):
+        return self.__disk
 
     def get_agent_name(self):
-        return self.agent_name
+        return self.__agent_name
 
     @staticmethod
     def action(observation, dimension):
@@ -73,16 +73,16 @@ class HeuristicAgent:
     this agent will use a heuristic that make choose wisely the place of piece by looking all the vacant
     places around and a sign a specific score for each possible place
     """
-    def __init__(self, agent_name, piece):
-        self.agent_name = agent_name
-        self.piece = piece
+    def __init__(self, agent_name, disk):
+        self.__agent_name = agent_name
+        self.__disk = disk
         pass
 
-    def get_piece(self):
-        return self.piece
+    def get_disk(self):
+        return self.__disk
 
     def get_agent_name(self):
-        return self.agent_name
+        return self.__agent_name
 
     def get_patterns(self, observation, pairs, dimension):
         """
@@ -99,7 +99,7 @@ class HeuristicAgent:
         for pair in pairs:
             if pair[0] == last_row and pair[1] == last_col:
                 # check the left
-                if observation[pair[0]][pair[1]-1] == self.get_piece():
+                if observation[pair[0]][pair[1]-1] == self.get_disk():
                     weight = 5
                     weights.append((pair, weight))
                 else:
@@ -108,7 +108,7 @@ class HeuristicAgent:
 
             elif pair[0] == last_row and pair[1] == first_col:
                 # check only the right
-                if observation[pair[0]][pair[1]+1] == self.get_piece():
+                if observation[pair[0]][pair[1]+1] == self.get_disk():
                     weight = 5
                     weights.append((pair, weight))
                 else:
@@ -117,16 +117,16 @@ class HeuristicAgent:
 
             elif pair[0] == last_row:
                 # check right, left and both diagonal
-                if observation[pair[0]][pair[1]+1] == self.get_piece():
+                if observation[pair[0]][pair[1]+1] == self.get_disk():
                     weight = 6
                     weights.append((pair, weight))
-                elif observation[pair[0]][pair[1]-1] == self.get_piece():
+                elif observation[pair[0]][pair[1]-1] == self.get_disk():
                     weight = 6
                     weights.append((pair, weight))
-                elif observation[pair[0]-1][pair[1]+1] == self.get_piece():
+                elif observation[pair[0]-1][pair[1]+1] == self.get_disk():
                     weight = 7
                     weights.append((pair, weight))
-                elif observation[pair[0]-1][pair[1]-1] == self.get_piece():
+                elif observation[pair[0]-1][pair[1]-1] == self.get_disk():
                     weight = 7
                     weights.append((pair, weight))
                 else:
@@ -135,13 +135,13 @@ class HeuristicAgent:
 
             elif pair[1] == last_col:
                 # check the down, left or diagonal
-                if observation[pair[0]][pair[1]-1] == self.get_piece():
+                if observation[pair[0]][pair[1]-1] == self.get_disk():
                     weight = 5
                     weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]] == self.get_piece():
+                elif observation[pair[0]+1][pair[1]] == self.get_disk():
                     weight = 8
                     weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]-1] == self.get_piece():
+                elif observation[pair[0]+1][pair[1]-1] == self.get_disk():
                     weight = 7
                     weights.append((pair, weight))
                 else:
@@ -150,13 +150,13 @@ class HeuristicAgent:
 
             elif pair[1] == first_col:
                 # check only the right, diagonal, the down and the opponent piece
-                if observation[pair[0]][pair[1]+1] == self.get_piece():
+                if observation[pair[0]][pair[1]+1] == self.get_disk():
                     weight = 5
                     weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]] == self.get_piece():
+                elif observation[pair[0]+1][pair[1]] == self.get_disk():
                     weight = 8
                     weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]+1] == self.get_piece():
+                elif observation[pair[0]+1][pair[1]+1] == self.get_disk():
                     weight = 7
                     weights.append((pair, weight))
                 else:
@@ -165,19 +165,19 @@ class HeuristicAgent:
 
             else:
                 # check only the right, diagonal, the down and the opponent piece
-                if observation[pair[0]][pair[1] + 1] == self.get_piece():
+                if observation[pair[0]][pair[1] + 1] == self.get_disk():
                     weight = 5.5
                     weights.append((pair, weight))
-                elif observation[pair[0]][pair[1]-1] == self.get_piece():
+                elif observation[pair[0]][pair[1]-1] == self.get_disk():
                     weight = 5.5
                     weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]] == self.get_piece():
+                elif observation[pair[0]+1][pair[1]] == self.get_disk():
                     weight = 8
                     weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]+1] == self.get_piece():
+                elif observation[pair[0]+1][pair[1]+1] == self.get_disk():
                     weight = 7.5
                     weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]-1] == self.get_piece():
+                elif observation[pair[0]+1][pair[1]-1] == self.get_disk():
                     weight = 7.5
                     weights.append((pair, weight))
                 else:
@@ -195,3 +195,7 @@ class HeuristicAgent:
         move = max(self.get_patterns(observation, valid_moves, dimension), key=itemgetter(1))
         row, col = move[0]
         return row, col
+
+
+class DQNAgent:
+    pass
