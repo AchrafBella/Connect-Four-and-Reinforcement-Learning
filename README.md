@@ -3,7 +3,7 @@
 
 Motivation (why i'm creating this API)
 -----------
-I was like every searching in the net for new technologies or new courses related to Data Science, and then i find a very interesting courses in Kaggle related to Reinforcement Learning. Actually it was good except the fact that they implemented all the framework i didn't like that because it was like a black box for me so i decided to implement all the framework myself.
+I was like every day searching in the net for new technologies or new courses related to Data Science, and then i find a very interesting courses in Kaggle related to Reinforcement Learning. Actually it was good except the fact that they implemented all the framework i didn't like that because it was like a black box for me so i decided to implement all the framework myself.
 And then reading lot of article ethier in kaggle, meduim or other websites i find out that the implementation is far to be close to the mathematical concepts so i decided to implement an API that based shape the theoretical concept and help the student to understand the mathematics behind just reading the code and the description of the functions. 
 
 
