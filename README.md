@@ -54,14 +54,12 @@ During the coding i took into consideration all the case that could block the ga
 
 Requirements
 -----------
-'''
     
     pip3 install -r requirements.txt (Python 3)
-'''
 
 Exemple to run: 
 -----------
-''' python
+ 
 
     agent1 = HeuristicAgent('hur agent 1', 1)
     agent1_ = AgentLeftMost('hur agent 2', 2)
@@ -71,7 +69,7 @@ Exemple to run:
     env.statistic_score(cumulative_reward_agent_1)
     env.statistic_score(cumulative_reward_agent_2)
 
-'''
+
 
 Results
 -----------
