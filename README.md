@@ -66,3 +66,11 @@ The plot of reward per round
 - left agents
 - heuristic agents
 
+
+Licensing
+-----------
+You are free to use or extend this project for
+- educational purposes provided that (1) you do not distribute or publish solutions
+- (2) you retain this notice
+- and (3) you provide clear attribution to Achraf BELLA, including a link to this repository
+# attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
