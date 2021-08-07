@@ -21,20 +21,23 @@ class Agent:
         return self.__agent_name
 
     @staticmethod
-    def action(observation, dimension):
+    def action(state, dimension):
         """
-        :param observation:
+        :param state:
         :param dimension
         :return:
         """
         columns = list()
         for col_ in range(dimension[1]):
-            if observation[0][col_] == 0:
+            if state[0][col_] == 0:
                 columns.append(col_)
-        col = random.choice(columns)
-        for row in reversed(range(dimension[0])):
-            if observation[row][col] == 0:
-                return row, col
+        try:
+            col = random.choice(columns)
+            for row in reversed(range(dimension[0])):
+                if state[row][col] == 0:
+                    return row, col
+        except Exception as e:
+            print("Unable to choose a move because of {}".format(e))
 
 
 class AgentLeftMost:
@@ -53,15 +56,15 @@ class AgentLeftMost:
         return self.__agent_name
 
     @staticmethod
-    def action(observation, dimension):
+    def action(state, dimension):
         """
-        :param observation:
+        :param state:
         :param dimension
         :return:
         """
         for col_ in range(dimension[1]):
             for row_ in reversed(range(dimension[0])):
-                if observation[row_][col_] == 0:
+                if state[row_][col_] == 0:
                     return row_, col_
                 pass
             pass
@@ -85,7 +88,7 @@ class HeuristicAgent:
         return self.__agent_name
 
     def get_patterns(self, observation, pairs, dimension):
-        """
+        """ deterministic way
         this function will get the patterns for the move for each move will assign a specific weight
         to weight my moves i choose a scale from 1 to 10
         :param observation:
@@ -185,17 +188,17 @@ class HeuristicAgent:
                     weights.append((pair, weight))
         return weights
 
-    def action(self, observation, dimension):
-        if np.all(observation == 0):
+    def action(self, state, dimension):
+        if np.all(state == 0):
             row, col = 5, random.randint(0, 6)
             return row, col
-        vacant_places = np.argwhere(observation == 0)
+        vacant_places = np.argwhere(state == 0)
         gs = it.groupby(vacant_places, key=itemgetter(1))
-        valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
-        move = max(self.get_patterns(observation, valid_moves, dimension), key=itemgetter(1))
-        row, col = move[0]
-        return row, col
+        try:
+            valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
+            move = max(self.get_patterns(state, valid_moves, dimension), key=itemgetter(1))
+            row, col = move[0]
+            return row, col
+        except Exception as e:
+            print("Unable to choose a move because of {}".format(e))
 
-
-class DQNAgent:
-    pass

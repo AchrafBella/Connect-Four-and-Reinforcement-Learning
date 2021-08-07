@@ -33,6 +33,12 @@ class Env:
         self.__board = np.zeros(self.__dimension)
         self.__winner = None
 
+    def step(self):
+        pass
+
+    def policy(self):
+        pass
+
     def __valid_location(self, row, column):
         """
         :param row:
@@ -167,13 +173,18 @@ class Env:
         second_player = self.__agent2 if first_player == self.__agent1 else self.__agent1
         reward_agent1 = 0
         reward_agent2 = 0
-        max_turn = 21
+        max_turn = 21  # because it's a finite state
+        # print('the first player is ', first_player,first_player.get_disk(), 'the second player is ',
+        #      second_player, second_player.get_disk())
 
         for turn in range(max_turn):
 
             row1, col1 = first_player.action(self.__board, self.__dimension)
             self.__drop_disk(row1, col1, first_player.get_disk())
             reward_agent1 += self.__reward(first_player, second_player)
+
+            # print("turn", turn, "first player")
+            # self.display_board()
 
             if self.check_wining_move(first_player):
                 break
@@ -182,29 +193,32 @@ class Env:
             self.__drop_disk(row2, col2, second_player.get_disk())
             reward_agent2 += self.__reward(second_player, first_player)
 
+            # print("turn", turn, "second player")
+            # self.display_board()
+
             if self.check_wining_move(second_player):
                 break
 
             # self.round_result(turn, first_player.get_agent_name(), row1, col1, reward_agent1)
             # self.round_result(turn, second_player.get_agent_name(), row2, col2, reward_agent2)
 
-            # debugging
-            if first_player == self.__agent1 and second_player == self.__agent2:
-                continue
-            else:
-                first_player, second_player = self.__agent1, self.__agent2
-                reward_agent1, reward_agent2 = reward_agent2, reward_agent1
+        # debugging
+        if first_player == self.__agent1 and second_player == self.__agent2:
+            return first_player, second_player, reward_agent1, reward_agent2
+        else:
+            first_player, second_player = self.__agent1, self.__agent2
+            reward_agent1, reward_agent2 = reward_agent2, reward_agent1
+            return first_player, second_player, reward_agent1, reward_agent2
 
-        return first_player, second_player, reward_agent1, reward_agent2
-
-    def run(self, rounds=3):
+    def run(self, rounds=1):
         """
         The Run function for abject to see how the agent will do when they play many times
+        * the utility represent the total of the reward (not discounted)
         :param rounds:
         :return: 2 list of cumulative rewards
         """
-        cumulative_reward_agent1 = list()
-        cumulative_reward_agent2 = list()
+        utility_agent1 = list()
+        utility_agent2 = list()
 
         winning_rounds_agent1 = 0
         winning_rounds_agent2 = 0
@@ -221,25 +235,26 @@ class Env:
             elif self.__winner == agent2:
                 winning_rounds_agent2 += 1
             else:
-                # in the case of draw we continue because the winner is None abject
+                # in the case of draw simply we continue because the winner is None abject
                 continue
 
-            cumulative_reward_agent1.append(reward1)
-            cumulative_reward_agent2.append(reward2)
+            utility_agent1.append(reward1)
+            utility_agent2.append(reward2)
 
             draws += 1 if self.check_game_over() else 0
 
             # information to track the rounds
             self.battle_result(self.__agent1.get_agent_name(), (winning_rounds_agent1/rounds)*100,
-                               sum(cumulative_reward_agent1))
+                               sum(utility_agent1))
             self.battle_result(self.__agent2.get_agent_name(), (winning_rounds_agent2/rounds)*100,
-                               sum(cumulative_reward_agent2))
+                               sum(utility_agent2))
             self.attribute(agent1, agent2)
             self.board_state()
+            # self.display_board()
             print("_"*100)
         print("In the total there is {} draws".format(draws))
 
-        return cumulative_reward_agent1, cumulative_reward_agent2
+        return utility_agent1, utility_agent2
 
     def reward_visualization(self, reward1, reward2):
         fig, (ax1, ax2) = plt.subplots(1, 2)
@@ -256,7 +271,7 @@ class Env:
     def get_dimension(self):
         return self.__dimension
 
-    def get_observation(self):
+    def get_state(self):
         return self.__board
 
     def get_winner(self):
