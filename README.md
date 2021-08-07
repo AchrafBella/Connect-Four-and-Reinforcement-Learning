@@ -7,6 +7,8 @@ I was like every searching in the net for new technologies or new courses relate
 And then reading lot of article ethier in kaggle, meduim or other websites i find out that the implementation is far to be close to the mathematical concepts so i decided to implement an API that based shape the theoretical concept and help the student to understand the mathematics behind just reading the code and the description of the functions. 
 
 
+Concepts
+-----------
 In this project i tired to implement the well-known game Connect 4  (aka  Four in a Row) and includ Reinforcement Learning concepts. Also, i provided the following agents:
 - Random Agent
 - Heuristic Agent
@@ -20,13 +22,8 @@ The reward system is as the following:
 - And -10 in case of draw / game over
 - he will get +1/42 for simple move
 
-Coding
------------
-During the coding i took into consideration all the case that could block the game either the full bord or the no vacant place and i used exception handling for that to pursuit the battle and i delete the score for this failed battle.
 
-Concepts
------------
-This project contains 2 main classes: Env this class represent the environment of the the agent which means the bpard, and another class agents as the name implies it contains all the agents including the DRL agent.
+This API contains 2 main classes: Env this class represent the environment of the the agent which means the bpard, and another class agents as the name implies it contains all the agents including the DRL agent.
 
 ![image](https://user-images.githubusercontent.com/52492864/128045136-8107d272-0b02-454a-bb0f-932d1079ec9f.png)
 
@@ -50,23 +47,28 @@ Then the number of states is 3^(6*7) = 3^42 = 109418989131512359209
 
 As we use Q-learning the Q-table size would be the number of actions * 109418989131512359209 where the action is the choice of the column
 
+
+Coding
+-----------
+During the coding i took into consideration all the case that could block the game either the full bord or the no vacant place and i used exception handling for that to pursuit the battle and i delete the score for this failed battle.
+
 Requirements
 -----------
 - pip3 install -r requirements.txt (Python 3)
 
-How to run
+Exemple to run: 
 -----------
 '''Python
+
     agent1 = HeuristicAgent('hur agent 1', 1)
     agent1_ = AgentLeftMost('hur agent 2', 2)
-
     env = Env(agents={'agent1': agent1, 'agent2': agent1_})
     cumulative_reward_agent_1, cumulative_reward_agent_2 = env.run(rounds=500)
     env.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
     env.statistic_score(cumulative_reward_agent_1)
     env.statistic_score(cumulative_reward_agent_2)
-'''
 
+'''
 
 Results
 -----------
