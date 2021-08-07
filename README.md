@@ -1,5 +1,12 @@
 # Game-AI-and-Reinforcement-Learning
 -------------------------------------
+
+Motivation (why i'm creating this API)
+-----------
+I was like every searching in the net for new technologies or new courses related to Data Science, and then i find a very interesting courses in Kaggle related to Reinforcement Learning. Actually it was good except the fact that they implemented all the framework i didn't like that because it was like a black box for me so i decided to implement all the framework myself.
+And then reading lot of article ethier in kaggle, meduim or other websites i find out that the implementation is far to be close to the mathematical concepts so i decided to implement an API that based shape the theoretical concept and help the student to understand the mathematics behind just reading the code and the description of the functions. 
+
+
 In this project i tired to implement the well-known game Connect 4  (aka  Four in a Row) and includ Reinforcement Learning concepts. Also, i provided the following agents:
 - Random Agent
 - Heuristic Agent
@@ -46,6 +53,19 @@ As we use Q-learning the Q-table size would be the number of actions * 109418989
 Requirements
 -----------
 - pip3 install -r requirements.txt (Python 3)
+
+How to run
+-----------
+'''Python
+    agent1 = HeuristicAgent('hur agent 1', 1)
+    agent1_ = AgentLeftMost('hur agent 2', 2)
+
+    env = Env(agents={'agent1': agent1, 'agent2': agent1_})
+    cumulative_reward_agent_1, cumulative_reward_agent_2 = env.run(rounds=500)
+    env.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
+    env.statistic_score(cumulative_reward_agent_1)
+    env.statistic_score(cumulative_reward_agent_2)
+'''
 
 
 Results
