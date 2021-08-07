@@ -54,26 +54,23 @@ During the coding i took into consideration all the case that could block the ga
 
 Requirements
 -----------
-    
-    pip3 install -r requirements.txt (Python 3)
+```python
+pip3 install -r requirements.txt (Python 3)
+```
 
 Exemple to run: 
 -----------
- 
+```python
+gent1 = HeuristicAgent('hur agent 1', 1)
+agent1_ = AgentLeftMost('hur agent 2', 2)
 
-    agent1 = HeuristicAgent('hur agent 1', 1)
-    agent1_ = AgentLeftMost('hur agent 2', 2)
-    env = Env(agents={'agent1': agent1, 'agent2': agent1_})
-    cumulative_reward_agent_1, cumulative_reward_agent_2 = env.run(rounds=500)
-    env.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
-    env.statistic_score(cumulative_reward_agent_1)
-    env.statistic_score(cumulative_reward_agent_2)
+env = Env(agents={'agent1': agent1, 'agent2': agent1_})
+    
+cumulative_reward_agent_1, cumulative_reward_agent_2 = env.run(rounds=500)
 
-
-```ruby
-require 'redcarpet'
-markdown = Redcarpet.new("Hello World!")
-puts markdown.to_html
+env.reward_visualization(cumulative_reward_agent_1, cumulative_reward_agent_2)
+env.statistic_score(cumulative_reward_agent_1)
+env.statistic_score(cumulative_reward_agent_2)
 ```
 
 Results
