@@ -61,7 +61,7 @@ Requirements
 
 Exemple to run: 
 -----------
-'''Python
+''' python
 
     agent1 = HeuristicAgent('hur agent 1', 1)
     agent1_ = AgentLeftMost('hur agent 2', 2)
