@@ -55,7 +55,9 @@ During the coding i took into consideration all the case that could block the ga
 Requirements
 -----------
 '''
+
 pip3 install -r requirements.txt (Python 3)
+
 '''
 
 Exemple to run: 
