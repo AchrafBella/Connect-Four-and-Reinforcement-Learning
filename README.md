@@ -70,6 +70,11 @@ Exemple to run:
     env.statistic_score(cumulative_reward_agent_2)
 
 
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
 
 Results
 -----------
