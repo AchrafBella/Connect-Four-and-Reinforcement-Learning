@@ -4,6 +4,11 @@ from operator import itemgetter
 import itertools as it
 
 
+"""
+the decision makers class
+"""
+
+
 class Agent:
     """"
     this agent represent a simple a approach that consist of using the hazard
@@ -71,7 +76,7 @@ class AgentLeftMost:
         pass
 
 
-class HeuristicAgent:
+class GreedyAgent:
     """
     this agent will use a heuristic that make choose wisely the place of piece by looking all the vacant
     places around and a sign a specific score for each possible place

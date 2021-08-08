@@ -8,14 +8,12 @@ class Env:
         This class represent the game environment
         we have to respect that the first drop of peace should be in the bottom
         also the game is over when one player get 4 peaces or the board left with zero vacant column
-
         For an DRL we need 3 function that will help us to create the Environment
         * Dimension: which is the input of our neural network
         * next_step: which is the next step and the output of the neural network
         * reward function: a function that reward or punch the agent depending on their action
         * reset function: that reset the game
         * step function: which is the action taken by the agent
-
         :param dimension: the dimension represent the board limits
         :param agents: dict of agents
         """
@@ -32,12 +30,6 @@ class Env:
         """
         self.__board = np.zeros(self.__dimension)
         self.__winner = None
-
-    def step(self):
-        pass
-
-    def policy(self):
-        pass
 
     def __valid_location(self, row, column):
         """
@@ -171,20 +163,14 @@ class Env:
 
         first_player = np.random.choice([self.__agent1, self.__agent2])
         second_player = self.__agent2 if first_player == self.__agent1 else self.__agent1
-        reward_agent1 = 0
-        reward_agent2 = 0
-        max_turn = 21  # because it's a finite state
-        # print('the first player is ', first_player,first_player.get_disk(), 'the second player is ',
-        #      second_player, second_player.get_disk())
+        reward_agent1, reward_agent2 = 0, 0
+        max_turn = 21
 
         for turn in range(max_turn):
 
             row1, col1 = first_player.action(self.__board, self.__dimension)
             self.__drop_disk(row1, col1, first_player.get_disk())
             reward_agent1 += self.__reward(first_player, second_player)
-
-            # print("turn", turn, "first player")
-            # self.display_board()
 
             if self.check_wining_move(first_player):
                 break
@@ -193,22 +179,16 @@ class Env:
             self.__drop_disk(row2, col2, second_player.get_disk())
             reward_agent2 += self.__reward(second_player, first_player)
 
-            # print("turn", turn, "second player")
-            # self.display_board()
-
             if self.check_wining_move(second_player):
                 break
 
             # self.round_result(turn, first_player.get_agent_name(), row1, col1, reward_agent1)
             # self.round_result(turn, second_player.get_agent_name(), row2, col2, reward_agent2)
 
-        # debugging
-        if first_player == self.__agent1 and second_player == self.__agent2:
-            return first_player, second_player, reward_agent1, reward_agent2
-        else:
+        if first_player == self.__agent2 and second_player == self.__agent1:
             first_player, second_player = self.__agent1, self.__agent2
             reward_agent1, reward_agent2 = reward_agent2, reward_agent1
-            return first_player, second_player, reward_agent1, reward_agent2
+        return first_player, second_player, reward_agent1, reward_agent2
 
     def run(self, rounds=1):
         """
@@ -217,11 +197,9 @@ class Env:
         :param rounds:
         :return: 2 list of cumulative rewards
         """
-        utility_agent1 = list()
-        utility_agent2 = list()
+        utility_agent1, utility_agent2 = list(), list()
 
-        winning_rounds_agent1 = 0
-        winning_rounds_agent2 = 0
+        winning_rounds_agent1, winning_rounds_agent2 = 0, 0
 
         draws = 0
 
@@ -230,16 +208,11 @@ class Env:
 
             agent1, agent2, reward1, reward2 = self.play_round()
 
-            if self.__winner == agent1:
-                winning_rounds_agent1 += 1
-            elif self.__winner == agent2:
-                winning_rounds_agent2 += 1
-            else:
-                # in the case of draw simply we continue because the winner is None abject
-                continue
-
             utility_agent1.append(reward1)
             utility_agent2.append(reward2)
+
+            winning_rounds_agent1 = self.winning_rate(agent1, winning_rounds_agent1)
+            winning_rounds_agent2 = self.winning_rate(agent2, winning_rounds_agent2)
 
             draws += 1 if self.check_game_over() else 0
 
@@ -284,7 +257,7 @@ class Env:
         print(*self.__board, sep='\n')
 
     def winning_rate(self, agent, winning_round):
-        if agent == self.__agent1 and agent == self.__winner:
+        if agent == self.__winner:
             winning_round += 1
         return winning_round
 
