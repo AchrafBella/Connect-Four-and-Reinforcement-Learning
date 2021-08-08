@@ -4,14 +4,9 @@ from operator import itemgetter
 import itertools as it
 
 
-"""
-the decision makers class
-"""
-
-
-class Agent:
+class RandomAgent:
     """"
-    this agent represent a simple a approach that consist of using the hazard
+    this agent represent a simple a approach that consist of exploring the all the option.
     i call this the random agent
     """
     def __init__(self, agent_name, disk):
@@ -47,7 +42,7 @@ class Agent:
 
 class AgentLeftMost:
     """"
-    this agent use a strategy that consists of playing the piece on the left
+    this agent use a strategy that consists of playing the piece on the left.
     """
     def __init__(self, agent_name, disk):
         self.__agent_name = agent_name
@@ -76,10 +71,10 @@ class AgentLeftMost:
         pass
 
 
-class GreedyAgent:
+class HeuristicAgent:
     """
-    this agent will use a heuristic that make choose wisely the place of piece by looking all the vacant
-    places around and a sign a specific score for each possible place
+    This agent use a heuristic that makes him choose wisely the place of piece by looking all the possible places
+    and a sign high score to places that contains the same piece
     """
     def __init__(self, agent_name, disk):
         self.__agent_name = agent_name
@@ -92,7 +87,7 @@ class GreedyAgent:
     def get_agent_name(self):
         return self.__agent_name
 
-    def get_patterns(self, observation, pairs, dimension):
+    def patterns(self, observation, pairs, dimension):
         """ deterministic way
         this function will get the patterns for the move for each move will assign a specific weight
         to weight my moves i choose a scale from 1 to 10
@@ -201,7 +196,7 @@ class GreedyAgent:
         gs = it.groupby(vacant_places, key=itemgetter(1))
         try:
             valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
-            move = max(self.get_patterns(state, valid_moves, dimension), key=itemgetter(1))
+            move = max(self.patterns(state, valid_moves, dimension), key=itemgetter(1))
             row, col = move[0]
             return row, col
         except Exception as e:

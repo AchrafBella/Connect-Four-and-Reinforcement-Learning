@@ -6,14 +6,13 @@ class Env:
     def __init__(self, agents, dimension=(6, 7)):
         """
         This class represent the game environment
-        we have to respect that the first drop of peace should be in the bottom
-        also the game is over when one player get 4 peaces or the board left with zero vacant column
-        For an DRL we need 3 function that will help us to create the Environment
-        * Dimension: which is the input of our neural network
-        * next_step: which is the next step and the output of the neural network
-        * reward function: a function that reward or punch the agent depending on their action
-        * reset function: that reset the game
-        * step function: which is the action taken by the agent
+        We have to respect that the first drop of piece should be in the bottom
+        also the game is over when one player get 4 peaces or the board left with zero vacant column.
+
+        The environment contains both the 2 players (agents)
+        Each agents should at least have 2 attributes disk and agent_name (get_disk(), get_agent_name)
+        and a function action that return row and column
+
         :param dimension: the dimension represent the board limits
         :param agents: dict of agents
         """
@@ -136,7 +135,7 @@ class Env:
 
     def __reward(self, agent, other_agent):
         """
-        this is the reward per turn
+        this is the stationary reward per turn
         :param agent:
         :param other_agent:
         :return:
@@ -164,18 +163,18 @@ class Env:
         first_player = np.random.choice([self.__agent1, self.__agent2])
         second_player = self.__agent2 if first_player == self.__agent1 else self.__agent1
         reward_agent1, reward_agent2 = 0, 0
-        max_turn = 21
+        max_turn = 21  # finite states
 
         for turn in range(max_turn):
 
-            row1, col1 = first_player.action(self.__board, self.__dimension)
+            row1, col1 = first_player.__action(self.__board, self.__dimension)
             self.__drop_disk(row1, col1, first_player.get_disk())
             reward_agent1 += self.__reward(first_player, second_player)
 
             if self.check_wining_move(first_player):
                 break
 
-            row2, col2 = second_player.action(self.__board, self.__dimension)
+            row2, col2 = second_player.__action(self.__board, self.__dimension)
             self.__drop_disk(row2, col2, second_player.get_disk())
             reward_agent2 += self.__reward(second_player, first_player)
 
@@ -198,7 +197,6 @@ class Env:
         :return: 2 list of cumulative rewards
         """
         utility_agent1, utility_agent2 = list(), list()
-
         winning_rounds_agent1, winning_rounds_agent2 = 0, 0
 
         draws = 0
@@ -223,7 +221,6 @@ class Env:
                                sum(utility_agent2))
             self.attribute(agent1, agent2)
             self.board_state()
-            # self.display_board()
             print("_"*100)
         print("In the total there is {} draws".format(draws))
 
