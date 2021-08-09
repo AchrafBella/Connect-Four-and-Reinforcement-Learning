@@ -59,6 +59,12 @@ env.statistic_score(cumulative_reward_agent_1)
 env.statistic_score(cumulative_reward_agent_2)
 ```
 
+Results
+-----------
+
+![image](https://user-images.githubusercontent.com/52492864/128653317-b5b3dc8e-463f-4fce-b536-d73964c4faf0.png)
+
+
 Licensing
 -----------
 You are free to use or extend this project for
