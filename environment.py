@@ -10,8 +10,8 @@ class Env:
         also the game is over when one player get 4 peaces or the board left with zero vacant column.
 
         The environment contains both the 2 players (agents)
-        Each agents should at least have 2 attributes disk and agent_name (get_disk(), get_agent_name)
-        and a function action that return row and column
+        Each agents should at least have 2 attributes disk & agent_name (get_disk(), get_agent_name)
+        and a function action with 2 parameters state & dimension that return row and column
 
         :param dimension: the dimension represent the board limits
         :param agents: dict of agents
@@ -41,15 +41,14 @@ class Env:
     def __get_next_valid_location(self, column):
         """
         :param column:
-        :return: valid row
+        :return:
         """
         for row in reversed(range(self.__dimension[0])):
             if self.__valid_location(row, column):
                 return row
 
     def __drop_disk(self, row, column, piece):
-        """ Action
-        A specific function for the agents
+        """
         :param row:
         :param column:
         :param piece:
@@ -60,8 +59,7 @@ class Env:
         self.__board[row][column] = piece
 
     def drop_disk_manually(self, piece):
-        """ Action
-        A specific function designed for the human player
+        """
         :param piece:
         :return:
         """
@@ -133,7 +131,7 @@ class Env:
                 pass
             pass
 
-    def __reward(self, agent, other_agent):
+    def get_reward(self, agent, other_agent):
         """
         this is the stationary reward per turn
         :param agent:
@@ -165,18 +163,18 @@ class Env:
         reward_agent1, reward_agent2 = 0, 0
         max_turn = 21  # finite states
 
-        for turn in range(max_turn):
+        for _ in range(max_turn):
 
-            row1, col1 = first_player.__action(self.__board, self.__dimension)
+            row1, col1 = first_player.action(self.__board, self.__dimension)
             self.__drop_disk(row1, col1, first_player.get_disk())
-            reward_agent1 += self.__reward(first_player, second_player)
+            reward_agent1 += self.get_reward(first_player, second_player)
 
             if self.check_wining_move(first_player):
                 break
 
-            row2, col2 = second_player.__action(self.__board, self.__dimension)
+            row2, col2 = second_player.action(self.__board, self.__dimension)
             self.__drop_disk(row2, col2, second_player.get_disk())
-            reward_agent2 += self.__reward(second_player, first_player)
+            reward_agent2 += self.get_reward(second_player, first_player)
 
             if self.check_wining_move(second_player):
                 break
@@ -214,15 +212,12 @@ class Env:
 
             draws += 1 if self.check_game_over() else 0
 
-            # information to track the rounds
-            self.battle_result(self.__agent1.get_agent_name(), (winning_rounds_agent1/rounds)*100,
-                               sum(utility_agent1))
-            self.battle_result(self.__agent2.get_agent_name(), (winning_rounds_agent2/rounds)*100,
-                               sum(utility_agent2))
-            self.attribute(agent1, agent2)
-            self.board_state()
-            print("_"*100)
+        # information to track the rounds
+        self.battle_result(self.__agent1.get_agent_name(), (winning_rounds_agent1/rounds)*100, sum(utility_agent1))
+        self.battle_result(self.__agent2.get_agent_name(), (winning_rounds_agent2/rounds)*100, sum(utility_agent2))
+        self.board_state()
         print("In the total there is {} draws".format(draws))
+        print("_"*100)
 
         return utility_agent1, utility_agent2
 
@@ -261,14 +256,6 @@ class Env:
     def board_state(self):
         s = 'The winner is {} and {} disks dropped in the board'.format(self.__winner.get_agent_name(),
                                                                         self.count_disks_in_board())
-        print(s)
-
-    def attribute(self, agent1, agent2):
-        s = ''
-        if self.__winner == agent1:
-            s = '{} won against {}'.format(agent1.get_agent_name(), agent2.get_agent_name())
-        elif self.__winner == agent2:
-            s = '{} won against {}'.format(agent2.get_agent_name(), agent1.get_agent_name())
         print(s)
 
     @staticmethod
