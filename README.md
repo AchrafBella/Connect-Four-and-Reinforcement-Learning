@@ -67,7 +67,8 @@ This figure represent the result of the battle between the agents, the percentag
 
 The figure below represent the battle between the Greedy agent and the Heuristic agent. for the Greedy agent with used the Exploratory approach with epsilon: 0 and both Exploratory and grredy action with epsilon 0.9
 
-![image](https://user-images.githubusercontent.com/52492864/128685983-7c84a0bc-b211-41a4-bc68-a7b5d9c215ae.png)
+![image](https://user-images.githubusercontent.com/52492864/128686295-b594159b-9848-488e-a9a3-614486c02546.png)
+
 
 Licensing
 -----------
