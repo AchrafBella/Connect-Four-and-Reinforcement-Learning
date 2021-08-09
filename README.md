@@ -63,7 +63,11 @@ Results
 -----------
 This figure represent the result of the battle between the agents, the percentage of winning is the result of 500 play.
 
-![image](https://user-images.githubusercontent.com/52492864/128653317-b5b3dc8e-463f-4fce-b536-d73964c4faf0.png)
+![image](https://user-images.githubusercontent.com/52492864/128684931-e071671e-7c77-45ce-80a2-25f7b048613f.png)
+
+the figure below represent the battle between the Greedy agent and the Heuristic agent. for the Greedy agent with used the Exploratory approach with epsilon: 0 and both Exploratory and grredy action with epsilon 0.9
+
+![image](https://user-images.githubusercontent.com/52492864/128684820-1eb3216c-0a41-4b4b-a72e-3b1b95629a5d.png)
 
 
 Licensing
