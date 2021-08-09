@@ -61,6 +61,7 @@ env.statistic_score(cumulative_reward_agent_2)
 
 Results
 -----------
+This figure represent the result of the battle between the agents, the percentage of winning is the result of 500 play.
 
 ![image](https://user-images.githubusercontent.com/52492864/128653317-b5b3dc8e-463f-4fce-b536-d73964c4faf0.png)
 
