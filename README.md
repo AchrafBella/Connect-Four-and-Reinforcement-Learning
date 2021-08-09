@@ -1,18 +1,26 @@
 # Game-AI-and-Reinforcement-Learning
 -------------------------------------
 
-Motivation (why i'm creating this API)
+Motivation
 -----------
-I was like every day searching in the net for new technologies or new courses related to Data Science, and then i find a very interesting courses in Kaggle related to Reinforcement Learning. Actually it was good except the fact that they implemented all the framework i didn't like that because it was like a black box for me so i decided to implement all the framework myself.
-And then reading lot of article ethier in kaggle, meduim or other websites i find out that the implementation is far to be close to the mathematical concepts so i decided to implement an API that based shape the theoretical concept and help the student to understand the mathematics behind just reading the code and the description of the functions. 
-
+Recently, i started reading more & more about Reinforcement Learning and then, i found a kaggle course that explain a little bit ML, DL & RL. the course come with his specific frameword all the concepts like Environment and agent were implemented in such a way to simplify the learning process. It's very interesting if you are beginner.
+I didn't like that because it was like a black box for me so i decided to implement my own framework for connect4.
+Later i found myself reading articles, seeing implementation not only for connect4 but for RL concepts, markov decision process, k-armed bandit ...ect
+I struggled to understand how people implementated these concepts because not all of them stick with the matematical notation and they were not all documented
+So i decided to create this API the simplify the use of these concept and even help the student to understand the concepts.
 
 Concepts
 -----------
-In this project i tired to implement the well-known game Connect 4  (aka  Four in a Row) and includ Reinforcement Learning concepts. Also, i provided the following agents:
+This project contains 2 main classes Environment and Agents.
+the Environment represent the well-known game Connect4 (aka  Four in a Row)
+
+Running the Environment you could shape the game, run battles btween agent or you and an agent, visualize the rewards, get statics about the winner, the percentage of win and the number of dropped disks.
+
+the class Agents contains: 
 - Random Agent
 - Heuristic Agent
 - Left Agent
+- Greedy Agent
 - DRL Agent
 
 For all these agent i build a reward system but specifically for the DRL Agent.
