@@ -23,7 +23,7 @@ class Env:
         self.__agent1 = agents.get('agent1', None)
         self.__agent2 = agents.get('agent2', None)
 
-    def __reset_configuration(self):
+    def reset_configuration(self):
         """
         :return:
         """
@@ -163,7 +163,7 @@ class Env:
         reward_agent1, reward_agent2 = 0, 0
         max_turn = 21  # finite states
 
-        for _ in range(max_turn):
+        for turn in range(max_turn):
 
             row1, col1 = first_player.action(self.__board, self.__dimension)
             self.__drop_disk(row1, col1, first_player.get_disk())
@@ -200,7 +200,7 @@ class Env:
         draws = 0
 
         for _ in range(rounds):
-            self.__reset_configuration()
+            self.reset_configuration()
 
             agent1, agent2, reward1, reward2 = self.play_round()
 
@@ -215,7 +215,6 @@ class Env:
         # information to track the rounds
         self.battle_result(self.__agent1.get_agent_name(), (winning_rounds_agent1/rounds)*100, sum(utility_agent1))
         self.battle_result(self.__agent2.get_agent_name(), (winning_rounds_agent2/rounds)*100, sum(utility_agent2))
-        self.board_state()
         print("In the total there is {} draws".format(draws))
         print("_"*100)
 
@@ -265,7 +264,8 @@ class Env:
 
     @staticmethod
     def battle_result(agent, winning_rate, cumulative_reward):
-        s = '{} won {}% of rounds with {} cumulative of reward'.format(agent, winning_rate, cumulative_reward)
+        s = '{} won {}% of rounds with {} cumulative of reward'.format(agent, round(winning_rate, 2),
+                                                                       round(cumulative_reward, 2))
         print(s)
 
     @staticmethod

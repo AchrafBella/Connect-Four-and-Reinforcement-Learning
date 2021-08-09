@@ -1,4 +1,3 @@
-import random
 import numpy as np
 from operator import itemgetter
 import itertools as it
@@ -31,7 +30,7 @@ class RandomAgent:
             if state[0][col_] == 0:
                 columns.append(col_)
         try:
-            col = random.choice(columns)
+            col = np.random.choice(columns)
             for row in reversed(range(dimension[0])):
                 if state[row][col] == 0:
                     return row, col
@@ -189,7 +188,7 @@ class HeuristicAgent:
 
     def action(self, state, dimension):
         if np.all(state == 0):
-            row, col = 5, random.randint(0, 6)
+            row, col = 5, np.random.randint(0, 6)
             return row, col
         vacant_places = np.argwhere(state == 0)
         gs = it.groupby(vacant_places, key=itemgetter(1))
@@ -203,7 +202,7 @@ class HeuristicAgent:
 
 
 class GreedyAgent:
-    def __init__(self, agent_name, disk, epsilon=0.1, k=6):
+    def __init__(self, agent_name, disk, epsilon=0.1, k=6, learning_rate=1):
         """
         to decide which action is the base
         we define Action-Values
@@ -213,15 +212,17 @@ class GreedyAgent:
         the reward is non stationary which make this a non stationary bandit problem
         :param epsilon:
         :param k:
+        :param learning_rate:
         :param agent_name:
         :param disk:
 
         """
         self.__epsilon = epsilon                   # Epsilon-greedy policy
         self.__k = k                               # number of actions
-        self.__Q = np.zeros(self.__k)              # action values
+        self.__Q = np.ones(self.__k)              # action values
         self.__action = list(range(self.__k))      # the actions
         self.__count_actions = np.zeros(self.__k)  # the count of the previous actions
+        self.learning_rate = learning_rate
         self.__rewards = list()                    # the total rewards
 
         self.__agent_name = agent_name
@@ -259,7 +260,7 @@ class GreedyAgent:
         :return:
         """
         self.__count_actions[action] += 1
-        self.__Q[action] += (reward - self.__Q[action]) / 2*(self.__count_actions[action])
+        self.__Q[action] += (reward - self.__Q[action]) / (self.learning_rate*self.__count_actions[action])
 
     def choose_action(self):
         """
@@ -277,6 +278,44 @@ class GreedyAgent:
     def reward_system(self, state, dimension, row, col):
         last_row, last_col = dimension[0] - 1, dimension[1] - 1
         first_col = 0
+
+        # check vertical locations
+        for r in range(dimension[0] - 3):
+            for c in range(dimension[1]):
+                if state[r][c] == self.get_disk() and state[r + 1][c] == self.get_disk() \
+                        and state[r + 2][c] == self.get_disk() and state[r + 3][c] == self.get_disk():
+                    return 15
+                pass
+            pass
+
+        # check horizontal location
+        for r in range(dimension[0]):
+            for c in range(dimension[1] - 3):
+                if state[r][c] == self.get_disk() and state[r][c + 1] == self.get_disk() \
+                        and state[r][c + 2] == self.get_disk() and state[r][c + 3] == self.get_disk():
+                    return 15
+                pass
+            pass
+
+        # check negative diagonal
+        for r in range(dimension[0]):
+            for c in range(dimension[1] - 3):
+                if state[r][c] == self.get_disk() and state[r - 1][c + 1] == self.get_disk() \
+                        and state[r - 2][c + 2] == self.get_disk() and state[r - 3][c + 3] == \
+                        self.get_disk():
+                    return 15
+                pass
+            pass
+
+        # check positive diagonal
+        for r in range(dimension[0] - 3):
+            for c in range(dimension[1] - 3):
+                if state[r][c] == self.get_disk() and state[r + 1][c + 1] == self.get_disk() \
+                        and state[r + 2][c + 2] == self.get_disk() and state[r + 3][c + 3] == \
+                        self.get_disk():
+                    return 15
+                pass
+            pass
 
         # checking for the left
         if row == last_row and col == first_col:
@@ -307,6 +346,7 @@ class GreedyAgent:
                 return 10
             else:
                 return 1/42
+
         # checking by the column
         elif row == last_row:
             if state[row-1][col] == self.get_disk():
@@ -322,7 +362,7 @@ class GreedyAgent:
             else:
                 return 1/42
         else:
-            return 1/42
+            return 0
 
     def action(self, state, dimension):
         row = None
