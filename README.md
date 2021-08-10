@@ -70,7 +70,7 @@ The figure below represent the total reward after battle between the Greedy agen
 
 ![image](https://user-images.githubusercontent.com/52492864/128686295-b594159b-9848-488e-a9a3-614486c02546.png)
 
-And here i fixed epsilon and i let the agent play with different learning rate. you should know that the environment is static so i set a seed to get the best learning rate for this battle and against this specifi agent.
+And here I fixed epsilon and I let the agent play with different learning rate. You should know that the environment is static, so I set a seed to get the best learning rate for this battle and against this specific agent.
 ![image](https://user-images.githubusercontent.com/52492864/128849348-0b86a84c-771c-4661-94b9-9f27ed8cbeef.png)
 
 
