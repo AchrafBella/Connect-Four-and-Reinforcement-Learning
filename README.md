@@ -64,15 +64,15 @@ Results
 -----------
 This figure represents the result of the battle between the agents, the percentage of winning is the result of 500 play.
 
-![image](https://user-images.githubusercontent.com/52492864/128684931-e071671e-7c77-45ce-80a2-25f7b048613f.png)
+![image](https://user-images.githubusercontent.com/52492864/128946522-9abf8a28-1ce8-4169-8261-9d073484aa50.png)
 
 The figure below represent the total reward after battle between the Greedy agent and the Heuristic agent. For the Greedy agent, with used the Exploratory approach with epsilon: 0 and both Exploratory and greedy action with epsilon 0.9
 
 ![image](https://user-images.githubusercontent.com/52492864/128686295-b594159b-9848-488e-a9a3-614486c02546.png)
 
 And here I fixed epsilon and I let the agent play with different learning rate. You should know that the environment is static, so I set a seed to get the best learning rate for this battle and against this specific agent.
-![image](https://user-images.githubusercontent.com/52492864/128849348-0b86a84c-771c-4661-94b9-9f27ed8cbeef.png)
 
+![image](https://user-images.githubusercontent.com/52492864/128849348-0b86a84c-771c-4661-94b9-9f27ed8cbeef.png)
 
 Licensing
 -----------
