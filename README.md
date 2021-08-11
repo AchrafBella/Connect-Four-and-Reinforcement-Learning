@@ -20,7 +20,7 @@ Running the Environment you could shape the game, run battles between an agent o
 
 The class Agents contain: 
 - Random Agent: as the name implies, randomly choose a move based on uniform distribution 
-- Heuristic Agent: using a specific heuristic I create, he chooses the move with high score
+- Heuristic Agent: using a specific heuristic I create, he chooses the move with high score. In Version2 this agent is able to block his opponent)
 - Left Agent: this agent use a strategy that consists of playing the piece on the left
 - Greedy Agent: this agent use the concept of Multi-Armed Bandit, he learns by playing and getting a reward
 - DRL Agent: using RL
@@ -64,7 +64,7 @@ Results
 -----------
 This figure represents the result of the battle between the agents, the percentage of winning is the result of 500 play.
 
-![image](https://user-images.githubusercontent.com/52492864/128946522-9abf8a28-1ce8-4169-8261-9d073484aa50.png)
+![image](https://user-images.githubusercontent.com/52492864/128951936-59f8204c-71a9-4c0a-8399-3deaeb97c0c9.png)
 
 The figure below represent the total reward after battle between the Greedy agent and the Heuristic agent. For the Greedy agent, with used the Exploratory approach with epsilon: 0 and both Exploratory and greedy action with epsilon 0.9
 
