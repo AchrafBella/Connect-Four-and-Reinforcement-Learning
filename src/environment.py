@@ -146,21 +146,17 @@ class Env:
 
         for turn in range(max_turn):
 
-            row1, col1 = first_player.action(self.__board, self.__dimension)
+            row1, col1 = first_player.action(self)
             self.__drop_disk(row1, col1, first_player.get_disk())
-
-            # self.display_board()
-            # print("_"*50)
 
             if self.check_wining_move(first_player):
                 break
 
-            row2, col2 = second_player.action(self.__board, self.__dimension)
+            row2, col2 = second_player.action(self)
             self.__drop_disk(row2, col2, second_player.get_disk())
 
             if self.check_wining_move(second_player):
                 break
-            # self.display_board()
 
             # self.round_result(first_player.get_agent_name(), turn, row1, col1)
             # self.round_result(second_player.get_agent_name(), turn, row2, col2)
@@ -236,8 +232,8 @@ class Env:
 
     @staticmethod
     def battle_result(agent1_name, agent2_name, winning_rate1, winning_rate2):
-        s = '{} won {} % of battles & {} won {} of battles'.format(agent1_name, round(winning_rate1, 2), agent2_name,
-                                                                   round(winning_rate2, 2))
+        s = '{} Win percentage: {} % \n{} Win percentage: {} %'.format(agent1_name, round(winning_rate1, 2), agent2_name,
+                                                                      round(winning_rate2, 2))
         print(s)
 
     @staticmethod

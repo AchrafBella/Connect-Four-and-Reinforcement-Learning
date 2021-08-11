@@ -3,14 +3,10 @@ from operator import itemgetter
 import itertools as it
 
 
-class RandomAgent:
-    """"
-    this agent represent a simple approach that consist of exploring the all the option.
-    """
+class Agent(object):
     def __init__(self, agent_name, disk):
         self.__agent_name = agent_name
         self.__disk = disk
-        pass
 
     def get_disk(self):
         return self.__disk
@@ -18,72 +14,62 @@ class RandomAgent:
     def get_agent_name(self):
         return self.__agent_name
 
+
+class RandomAgent(Agent):
+    """"
+    this agent represent a simple approach that consist of exploring the all the option.
+    """
+    def __init__(self, agent_name, disk):
+        super().__init__(agent_name, disk)
+
     @staticmethod
-    def action(state, dimension):
+    def action(env):
         """
-        :param state:
-        :param dimension
+        env
         :return:
         """
         columns = list()
-        for col_ in range(dimension[1]):
-            if state[0][col_] == 0:
+        for col_ in range(env.get_dimension()[1]):
+            if env.get_state()[0][col_] == 0:
                 columns.append(col_)
         try:
             col = np.random.choice(columns)
-            for row in reversed(range(dimension[0])):
-                if state[row][col] == 0:
+            for row in reversed(range(env.get_dimension()[0])):
+                if env.get_state()[row][col] == 0:
                     return row, col
         except Exception as e:
             print("Unable to choose a move because of {}".format(e))
 
 
-class AgentLeftMost:
+class AgentLeftMost(Agent):
     """"
     this agent use a strategy that consists of playing the piece on the left.
     """
     def __init__(self, agent_name, disk):
-        self.__agent_name = agent_name
-        self.__disk = disk
-        pass
-
-    def get_disk(self):
-        return self.__disk
-
-    def get_agent_name(self):
-        return self.__agent_name
+        super().__init__(agent_name, disk)
 
     @staticmethod
-    def action(state, dimension):
+    def action(env):
         """
-        :param state:
-        :param dimension
+        :param env
         :return:
         """
-        for col_ in range(dimension[1]):
-            for row_ in reversed(range(dimension[0])):
-                if state[row_][col_] == 0:
+        for col_ in range(env.get_dimension()[1]):
+            for row_ in reversed(range(env.get_dimension()[0])):
+                if env.get_state()[row_][col_] == 0:
                     return row_, col_
                 pass
             pass
         pass
 
 
-class HeuristicAgent:
+class HeuristicAgent(Agent):
     """
     This agent use an heuristic that makes him choose wisely the place of piece by looking all the possible places
     he chooses the place with the high score
     """
     def __init__(self, agent_name, disk):
-        self.__agent_name = agent_name
-        self.__disk = disk
-        pass
-
-    def get_disk(self):
-        return self.__disk
-
-    def get_agent_name(self):
-        return self.__agent_name
+        super().__init__(agent_name, disk)
 
     def patterns(self, observation, pairs, dimension):
         """ deterministic way
@@ -104,7 +90,7 @@ class HeuristicAgent:
                     weight = 4
                     weights.append((pair, weight))
                 else:
-                    weight = 1
+                    weight = 0
                     weights.append((pair, weight))
 
             if pair[0] == last_row and pair[1] == first_col:
@@ -113,7 +99,7 @@ class HeuristicAgent:
                     weight = 4
                     weights.append((pair, weight))
                 else:
-                    weight = 1
+                    weight = 0
                     weights.append((pair, weight))
 
             if pair[0] == last_row and pair[1] != last_col and pair[1] != first_col:
@@ -131,7 +117,7 @@ class HeuristicAgent:
                     weight = 6
                     weights.append((pair, weight))
                 else:
-                    weight = 1
+                    weight = 0
                     weights.append((pair, weight))
 
             if pair[1] == last_col and pair[0] != last_row:
@@ -149,7 +135,7 @@ class HeuristicAgent:
                     weight = 3
                     weights.append((pair, weight))
                 else:
-                    weight = 1
+                    weight = 0
                     weights.append((pair, weight))
 
             if pair[1] == first_col and pair[0] != last_row:
@@ -167,31 +153,36 @@ class HeuristicAgent:
                     weight = 3
                     weights.append((pair, weight))
                 else:
-                    weight = 1
+                    weight = 0
                     weights.append((pair, weight))
             else:
-                weight = 1
+                weight = 0
                 weights.append((pair, weight))
 
         return weights
 
-    def action(self, state, dimension):
-        if np.all(state == 0):
+    def action(self, env):
+        """
+        :param env:
+        :return:
+        """
+        if np.all(env.get_state() == 0):
             row, col = 5, np.random.randint(0, 6)
             return row, col
-        vacant_places = np.argwhere(state == 0)
+        vacant_places = np.argwhere(env.get_state() == 0)
         gs = it.groupby(vacant_places, key=itemgetter(1))
         try:
             valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
-            move = max(self.patterns(state, valid_moves, dimension), key=itemgetter(1))
+            move = max(self.patterns(env.get_state(), valid_moves, env.get_dimension()), key=itemgetter(1))
             row, col = move[0]
             return row, col
         except Exception as e:
             print("Unable to choose a move because of {}".format(e))
 
 
-class GreedyAgent:
+class GreedyAgent(Agent):
     def __init__(self, agent_name, disk, epsilon=0.1, k=6, learning_rate=1):
+        super().__init__(agent_name, disk)
         """
         to decide which action is the base
         we define Action-Values
@@ -208,20 +199,25 @@ class GreedyAgent:
         """
         self.__epsilon = epsilon                   # Epsilon-greedy policy
         self.__k = k                               # number of actions
-        self.__Q = np.ones(self.__k)              # action values
+        self.__Q = np.zeros(self.__k)               # action values
         self.__action = list(range(self.__k))      # the actions
         self.__count_actions = np.zeros(self.__k)  # the count of the previous actions
         self.learning_rate = learning_rate
+        self.__last_action = None
+
         self.__rewards = list()                    # the total rewards
 
-        self.__agent_name = agent_name
-        self.__disk = disk
+    def reset(self):
+        self.__Q = np.ones(self.__k)
+        self.__action = list(range(self.__k))
+        self.__count_actions = np.zeros(self.__k)
+        self.__last_action = None
 
-    def get_agent_name(self):
-        return self.__agent_name
+    def get_last_action(self):
+        return self.__last_action
 
-    def get_disk(self):
-        return self.__disk
+    def set_last_action(self, last_action):
+        self.__last_action = last_action
 
     def get_count_actions(self):
         return self.__count_actions
@@ -235,7 +231,7 @@ class GreedyAgent:
     def get_total_reward(self):
         return sum(self.__rewards)
 
-    def compute_action_values(self, action, reward):
+    def compute_action_values(self, reward):
         """
         The incremental update rule action-value Q for each (action a, reward r):
         n += 1
@@ -244,119 +240,32 @@ class GreedyAgent:
         n = number of times action "a" was performed
         Q(a) = value estimate of action "a"
         r(a) = reward of sampling action bandit (bandit) "a"
-        :param action:
         :param reward:
         :return:
         """
-        self.__count_actions[action] += 1
-        self.__Q[action] += (reward - self.__Q[action]) / (self.learning_rate*self.__count_actions[action])
+        self.__count_actions[self.__last_action] += 1
+        q_d = reward - self.__Q[self.__last_action]
+        q_m = self.learning_rate * self.__count_actions[self.__last_action]
+        self.__Q[self.__last_action] += q_d / q_m
 
-    def choose_action(self):
+    def epsilon_greedy_policy(self):
         """
         the agent has the ability to choose either a greedy action or non-greedy action
         :return:
         """
-        # explore
         if np.random.random() < self.__epsilon:
             action = np.random.choice(self.__action)
-        # exploit
         else:
             action = np.argmax(self.__Q)
+        self.__last_action = action
         return action
 
-    def reward_system(self, state, dimension, row, col):
-        last_row, last_col = dimension[0] - 1, dimension[1] - 1
-        first_col = 0
-
-        # check vertical locations
-        for r in range(dimension[0] - 3):
-            for c in range(dimension[1]):
-                if state[r][c] == self.get_disk() and state[r + 1][c] == self.get_disk() \
-                        and state[r + 2][c] == self.get_disk() and state[r + 3][c] == self.get_disk():
-                    return 15
-                pass
-            pass
-
-        # check horizontal location
-        for r in range(dimension[0]):
-            for c in range(dimension[1] - 3):
-                if state[r][c] == self.get_disk() and state[r][c + 1] == self.get_disk() \
-                        and state[r][c + 2] == self.get_disk() and state[r][c + 3] == self.get_disk():
-                    return 15
-                pass
-            pass
-
-        # check negative diagonal
-        for r in range(dimension[0]):
-            for c in range(dimension[1] - 3):
-                if state[r][c] == self.get_disk() and state[r - 1][c + 1] == self.get_disk() \
-                        and state[r - 2][c + 2] == self.get_disk() and state[r - 3][c + 3] == \
-                        self.get_disk():
-                    return 15
-                pass
-            pass
-
-        # check positive diagonal
-        for r in range(dimension[0] - 3):
-            for c in range(dimension[1] - 3):
-                if state[r][c] == self.get_disk() and state[r + 1][c + 1] == self.get_disk() \
-                        and state[r + 2][c + 2] == self.get_disk() and state[r + 3][c + 3] == \
-                        self.get_disk():
-                    return 15
-                pass
-            pass
-
-        # checking for the left
-        if row == last_row and col == first_col:
-            if state[row][col+1] == self.get_disk():
-                return 2
-            elif state[row][col+1] == self.get_disk() and state[row][col+2] == self.get_disk():
-                return 3
-            elif state[row][col+1] == self.get_disk() and state[row][col+2] == self.get_disk() and \
-                    state[row][col+3] == self.get_disk():
-                return 5
-            elif state[row][col+1] == self.get_disk() and state[row][col+2] == self.get_disk() and \
-                    state[row][col+3] == self.get_disk() and state[row][col+4] == self.get_disk():
-                return 10
-            else:
-                return 0
-
-        # checking for the right
-        elif row == last_row and col == last_col:
-            if state[row][col - 1] == self.get_disk():
-                return 2
-            elif state[row][col - 1] == self.get_disk() and state[row][col - 2] == self.get_disk():
-                return 3
-            elif state[row][col - 1] == self.get_disk() and state[row][col - 2] == self.get_disk() and \
-                    state[row][col + 3] == self.get_disk():
-                return 5
-            elif state[row][col - 1] == self.get_disk() and state[row][col - 2] == self.get_disk() and \
-                    state[row][col - 3] == self.get_disk() and state[row][col - 4] == self.get_disk():
-                return 10
-            else:
-                return 0
-
-        # checking by the column
-        elif row == last_row:
-            if state[row-1][col] == self.get_disk():
-                return 2
-            elif state[row - 1][col] == self.get_disk() and state[row - 2][col] == self.get_disk():
-                return 3
-            elif state[row - 1][col] == self.get_disk() and state[row - 2][col] == self.get_disk() and \
-                    state[row - 3][col] == self.get_disk():
-                return 5
-            elif state[row - 1][col] == self.get_disk() and state[row - 2][col] == self.get_disk() and \
-                    state[row - 3][col] == self.get_disk() and state[row - 4][col] == self.get_disk():
-                return 10
-            else:
-                return 0
-        else:
-            return 0
-
     def action(self, state, dimension):
-        row = None
-        col = self.choose_action()
-
+        if self.__last_action is None:
+            col = np.random.choice(self.__action)
+        else:
+            col = self.epsilon_greedy_policy()
+        row = 0
         while row is None:
             try:
                 for _row in reversed(range(dimension[0])):
@@ -364,12 +273,14 @@ class GreedyAgent:
                         row = _row
                         break
                         pass
+                    if row is None:
+                        col = self.epsilon_greedy_policy()
+                        pass
                     pass
-                if row is None:
-                    col = self.choose_action()
+                pass
             except Exception as e:
                 print("Couldn't choose a row or column because of {}".format(e))
-        reward = self.reward_system(state, dimension, row, col)
-        self.__rewards.append(reward)
-        self.compute_action_values(col, reward)
+        self.__last_action = col
+        reward = 5
+        self.compute_action_values(reward)
         return row, col
