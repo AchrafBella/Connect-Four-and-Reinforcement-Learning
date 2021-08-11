@@ -131,24 +131,6 @@ class Env:
                 pass
             pass
 
-    def get_reward(self, agent, other_agent):
-        """
-        this is the stationary reward per turn
-        :param agent:
-        :param other_agent:
-        :return:
-        """
-        reward = 0
-        if self.check_wining_move(agent):
-            reward += 1
-        elif self.check_wining_move(other_agent):
-            reward -= 1
-        elif self.check_game_over():
-            reward -= 10
-        else:
-            reward += 1/42
-        return reward
-
     def play_round(self):
         """
         * we should set who play first randomly
@@ -160,32 +142,34 @@ class Env:
 
         first_player = np.random.choice([self.__agent1, self.__agent2])
         second_player = self.__agent2 if first_player == self.__agent1 else self.__agent1
-        reward_agent1, reward_agent2 = 0, 0
         max_turn = 21  # finite states
 
         for turn in range(max_turn):
 
             row1, col1 = first_player.action(self.__board, self.__dimension)
             self.__drop_disk(row1, col1, first_player.get_disk())
-            reward_agent1 += self.get_reward(first_player, second_player)
+
+            # self.display_board()
+            # print("_"*50)
 
             if self.check_wining_move(first_player):
                 break
 
             row2, col2 = second_player.action(self.__board, self.__dimension)
             self.__drop_disk(row2, col2, second_player.get_disk())
-            reward_agent2 += self.get_reward(second_player, first_player)
 
             if self.check_wining_move(second_player):
                 break
+            # self.display_board()
 
-            # self.round_result(turn, first_player.get_agent_name(), row1, col1, reward_agent1)
-            # self.round_result(turn, second_player.get_agent_name(), row2, col2, reward_agent2)
+            # self.round_result(first_player.get_agent_name(), turn, row1, col1)
+            # self.round_result(second_player.get_agent_name(), turn, row2, col2)
+            # print("_"*50)
 
         if first_player == self.__agent2 and second_player == self.__agent1:
             first_player, second_player = self.__agent1, self.__agent2
-            reward_agent1, reward_agent2 = reward_agent2, reward_agent1
-        return first_player, second_player, reward_agent1, reward_agent2
+
+        return first_player, second_player
 
     def run(self, rounds=1):
         """
@@ -194,18 +178,13 @@ class Env:
         :param rounds:
         :return: 2 list of cumulative rewards
         """
-        utility_agent1, utility_agent2 = list(), list()
         winning_rounds_agent1, winning_rounds_agent2 = 0, 0
-
         draws = 0
 
         for _ in range(rounds):
             self.reset_configuration()
 
-            agent1, agent2, reward1, reward2 = self.play_round()
-
-            utility_agent1.append(reward1)
-            utility_agent2.append(reward2)
+            agent1, agent2 = self.play_round()
 
             winning_rounds_agent1 = self.winning_rate(agent1, winning_rounds_agent1)
             winning_rounds_agent2 = self.winning_rate(agent2, winning_rounds_agent2)
@@ -213,12 +192,10 @@ class Env:
             draws += 1 if self.check_game_over() else 0
 
         # information to track the rounds
-        self.battle_result(self.__agent1.get_agent_name(), (winning_rounds_agent1/rounds)*100, sum(utility_agent1))
-        self.battle_result(self.__agent2.get_agent_name(), (winning_rounds_agent2/rounds)*100, sum(utility_agent2))
+        self.battle_result(self.__agent1.get_agent_name(),  self.__agent2.get_agent_name(),
+                           (winning_rounds_agent1/rounds)*100, (winning_rounds_agent2/rounds)*100)
         print("In the total there is {} draws".format(draws))
         print("_"*100)
-
-        return utility_agent1, utility_agent2
 
     def reward_visualization(self, reward1, reward2):
         fig, (ax1, ax2) = plt.subplots(1, 2)
@@ -252,20 +229,15 @@ class Env:
             winning_round += 1
         return winning_round
 
-    def board_state(self):
-        s = 'The winner is {} and {} disks dropped in the board'.format(self.__winner.get_agent_name(),
-                                                                        self.count_disks_in_board())
+    @staticmethod
+    def round_result(agent_name, turn, row, col):
+        s = 'The {} in his {} turn drop a piece in row={}, col={}'.format(agent_name, turn, row, col)
         print(s)
 
     @staticmethod
-    def round_result(turn, agent, row, col, score):
-        s = 'The {} in {} turn drop the piece in row={}, col={} with score: {}'.format(agent, turn, row, col, score)
-        print(s)
-
-    @staticmethod
-    def battle_result(agent, winning_rate, cumulative_reward):
-        s = '{} won {}% of rounds with {} cumulative of reward'.format(agent, round(winning_rate, 2),
-                                                                       round(cumulative_reward, 2))
+    def battle_result(agent1_name, agent2_name, winning_rate1, winning_rate2):
+        s = '{} won {} % of battles & {} won {} of battles'.format(agent1_name, round(winning_rate1, 2), agent2_name,
+                                                                   round(winning_rate2, 2))
         print(s)
 
     @staticmethod

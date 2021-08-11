@@ -95,95 +95,84 @@ class HeuristicAgent:
         :return:
         """
         weights = list()
-        last_row, last_col = dimension[0]-1, dimension[1]-1
+        last_row, last_col = dimension[0] - 1, dimension[1] - 1
         first_col = 0
         for pair in pairs:
             if pair[0] == last_row and pair[1] == last_col:
                 # check the left
-                if observation[pair[0]][pair[1]-1] == self.get_disk():
-                    weight = 5
+                if observation[pair[0]][pair[1] - 1] == self.get_disk():
+                    weight = 4
                     weights.append((pair, weight))
                 else:
                     weight = 1
                     weights.append((pair, weight))
 
-            elif pair[0] == last_row and pair[1] == first_col:
+            if pair[0] == last_row and pair[1] == first_col:
                 # check only the right
-                if observation[pair[0]][pair[1]+1] == self.get_disk():
-                    weight = 5
+                if observation[pair[0]][pair[1] + 1] == self.get_disk():
+                    weight = 4
                     weights.append((pair, weight))
                 else:
                     weight = 1
                     weights.append((pair, weight))
 
-            elif pair[0] == last_row:
+            if pair[0] == last_row and pair[1] != last_col and pair[1] != first_col:
                 # check right, left and both diagonal
-                if observation[pair[0]][pair[1]+1] == self.get_disk():
-                    weight = 6
-                    weights.append((pair, weight))
-                elif observation[pair[0]][pair[1]-1] == self.get_disk():
-                    weight = 6
-                    weights.append((pair, weight))
-                elif observation[pair[0]-1][pair[1]+1] == self.get_disk():
-                    weight = 7
-                    weights.append((pair, weight))
-                elif observation[pair[0]-1][pair[1]-1] == self.get_disk():
-                    weight = 7
-                    weights.append((pair, weight))
-                else:
-                    weight = 7
-                    weights.append((pair, weight))
-
-            elif pair[1] == last_col:
-                # check the down, left or diagonal
-                if observation[pair[0]][pair[1]-1] == self.get_disk():
-                    weight = 5
-                    weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]] == self.get_disk():
-                    weight = 8
-                    weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]-1] == self.get_disk():
-                    weight = 7
-                    weights.append((pair, weight))
-                else:
-                    weight = 4
-                    weights.append((pair, weight))
-
-            elif pair[1] == first_col:
-                # check only the right, diagonal, the down and the opponent piece
-                if observation[pair[0]][pair[1]+1] == self.get_disk():
-                    weight = 5
-                    weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]] == self.get_disk():
-                    weight = 8
-                    weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]+1] == self.get_disk():
-                    weight = 7
-                    weights.append((pair, weight))
-                else:
-                    weight = 4
-                    weights.append((pair, weight))
-
-            else:
-                # check only the right, diagonal, the down and the opponent piece
                 if observation[pair[0]][pair[1] + 1] == self.get_disk():
-                    weight = 5.5
-                    weights.append((pair, weight))
-                elif observation[pair[0]][pair[1]-1] == self.get_disk():
-                    weight = 5.5
-                    weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]] == self.get_disk():
-                    weight = 8
-                    weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]+1] == self.get_disk():
-                    weight = 7.5
-                    weights.append((pair, weight))
-                elif observation[pair[0]+1][pair[1]-1] == self.get_disk():
-                    weight = 7.5
-                    weights.append((pair, weight))
-                else:
                     weight = 5
                     weights.append((pair, weight))
+                if observation[pair[0]][pair[1] - 1] == self.get_disk():
+                    weight = 5
+                    weights.append((pair, weight))
+                if observation[pair[0] - 1][pair[1] + 1] == self.get_disk():
+                    weight = 6
+                    weights.append((pair, weight))
+                if observation[pair[0] - 1][pair[1] - 1] == self.get_disk():
+                    weight = 6
+                    weights.append((pair, weight))
+                else:
+                    weight = 1
+                    weights.append((pair, weight))
+
+            if pair[1] == last_col and pair[0] != last_row:
+                # check the down, left or diagonal
+                if observation[pair[0]][pair[1] - 1] == self.get_disk():
+                    weight = 3
+                    weights.append((pair, weight))
+                if observation[pair[0] + 1][pair[1]] == self.get_disk():
+                    weight = 3
+                    weights.append((pair, weight))
+                if observation[pair[0] + 1][pair[1]] != self.get_disk() and observation[pair[0] + 1][pair[1]] != 0:
+                    weight = 6
+                    weights.append((pair, weight))
+                if observation[pair[0] + 1][pair[1] - 1] == self.get_disk():
+                    weight = 3
+                    weights.append((pair, weight))
+                else:
+                    weight = 1
+                    weights.append((pair, weight))
+
+            if pair[1] == first_col and pair[0] != last_row:
+                # check the down, left or diagonal
+                if observation[pair[0]][pair[1] + 1] == self.get_disk():
+                    weight = 3
+                    weights.append((pair, weight))
+                if observation[pair[0] + 1][pair[1]] == self.get_disk():
+                    weight = 3
+                    weights.append((pair, weight))
+                if observation[pair[0] + 1][pair[1]] != self.get_disk() and observation[pair[0] + 1][pair[1]] != 0:
+                    weight = 6
+                    weights.append((pair, weight))
+                if observation[pair[0] + 1][pair[1] + 1] == self.get_disk():
+                    weight = 3
+                    weights.append((pair, weight))
+                else:
+                    weight = 1
+                    weights.append((pair, weight))
+            else:
+                weight = 1
+                weights.append((pair, weight))
+
         return weights
 
     def action(self, state, dimension):
@@ -330,7 +319,7 @@ class GreedyAgent:
                     state[row][col+3] == self.get_disk() and state[row][col+4] == self.get_disk():
                 return 10
             else:
-                return 1/42
+                return 0
 
         # checking for the right
         elif row == last_row and col == last_col:
@@ -345,7 +334,7 @@ class GreedyAgent:
                     state[row][col - 3] == self.get_disk() and state[row][col - 4] == self.get_disk():
                 return 10
             else:
-                return 1/42
+                return 0
 
         # checking by the column
         elif row == last_row:
@@ -360,7 +349,7 @@ class GreedyAgent:
                     state[row - 3][col] == self.get_disk() and state[row - 4][col] == self.get_disk():
                 return 10
             else:
-                return 1/42
+                return 0
         else:
             return 0
 
