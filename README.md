@@ -20,7 +20,7 @@ Running the Environment you could shape the game, run battles between an agent o
 
 The class Agents contain: 
 - Random Agent: as the name implies, randomly choose a move based on uniform distribution 
-- Heuristic Agent: using a specific heuristic I create, he chooses the move with high score. In Version2 this agent is able to block his opponent)
+- Heuristic Agent: using a specific heuristic I create, he chooses the move with high score. In Version2 the agent is able to block opponent attack
 - Left Agent: this agent use a strategy that consists of playing the piece on the left
 - Greedy Agent: this agent use the concept of Multi-Armed Bandit, he learns by playing and getting a reward
 - DRL Agent: using RL
