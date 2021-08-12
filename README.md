@@ -15,7 +15,7 @@ Concepts
 This project contains 2 main classes, Environment and Agents.
 The Environment represents the well-known game Connect4 (aka  Four in a Row)
 
-Running the Environment you could shape the game, run battles between an agent or you and an agent, visualize the rewards, get statistics about the winner, the percentage of win and the number of dropped disks.
+By running the Environment you could shape the game, run battles between an agent or you and an agent, visualize the rewards, get statistics about the winner, the percentage of win and the number of dropped disks per round.
 ![image](https://user-images.githubusercontent.com/52492864/128045136-8107d272-0b02-454a-bb0f-932d1079ec9f.png)
 
 The class Agents contain: 
