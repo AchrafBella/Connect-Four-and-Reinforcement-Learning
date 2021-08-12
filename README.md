@@ -34,6 +34,12 @@ The reward system is as the following:
 
 Concerning the environment of the game connect4 I modeling it using an array (Python object) that represent the field. Also, I updated the design environment for all the agents.
 
+challenges
+-----------
+During the programming of the game, I aim to build a robust program that do not bug and able to handle exceptions to ensure  continuously the work of the program.
+Also, I optimized the program as much as the possible and that is shown by the way the variable is declared, the using of list with o(1) complexity for inserting, using POO paradigm especially with inheritance & polymorphism.
+I adapted the environment to all the agents which is not all easy task especially for the agents that use the learning methods.
+
 Coding
 -----------
 During the coding I took into consideration all the case that could block the game either if the board is full or when we left with no vacant place and I used exception handling for that to pursuit the battle and I delete the score for this failed battle.
