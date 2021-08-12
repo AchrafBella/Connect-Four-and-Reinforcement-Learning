@@ -74,7 +74,7 @@ And here I fixed epsilon and I let the agent play with different learning rate. 
 
 ![image](https://user-images.githubusercontent.com/52492864/128849348-0b86a84c-771c-4661-94b9-9f27ed8cbeef.png)
 
-Licensing
+License
 -----------
 You are free to use or extend this project for
 educational purposes provided that (1) you do not distribute or publish solutions (2) you retain this notice and (3) you provide clear attribution to Achraf BELLA, including a link to this repository.
