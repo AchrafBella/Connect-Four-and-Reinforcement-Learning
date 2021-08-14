@@ -23,6 +23,9 @@ class Env:
         self.__agent1 = agents.get('agent1', None)
         self.__agent2 = agents.get('agent2', None)
 
+    def get_agents(self):
+        return self.__agent1, self.__agent2
+
     def reset_configuration(self):
         """
         :return:
@@ -30,7 +33,7 @@ class Env:
         self.__board = np.zeros(self.__dimension)
         self.__winner = None
 
-    def __valid_location(self, row, column):
+    def valid_location(self, row, column):
         """
         :param row:
         :param column:
@@ -38,13 +41,13 @@ class Env:
         """
         return self.__board[row][column] == 0
 
-    def __get_next_valid_location(self, column):
+    def get_next_valid_location(self, column):
         """
         :param column:
         :return:
         """
         for row in reversed(range(self.__dimension[0])):
-            if self.__valid_location(row, column):
+            if self.valid_location(row, column):
                 return row
 
     def __drop_disk(self, row, column, piece):
@@ -67,10 +70,10 @@ class Env:
         column = int(input('Your turn: please choose a column: '))
         if column >= 7 or column < 0 or np.all((self.__board != 0), axis=0)[column]:
             raise PieceMisplaced("Please check the column you want to put your piece in")
-        if self.__valid_location(row, column):
+        if self.valid_location(row, column):
             self.__board[row][column] = piece
         else:
-            row = self.__get_next_valid_location(column)
+            row = self.get_next_valid_location(column)
             self.__board[row][column] = piece
 
     def check_game_over(self):
@@ -161,6 +164,7 @@ class Env:
             # self.round_result(first_player.get_agent_name(), turn, row1, col1)
             # self.round_result(second_player.get_agent_name(), turn, row2, col2)
             # print("_"*50)
+        self.display_board()
 
         if first_player == self.__agent2 and second_player == self.__agent1:
             first_player, second_player = self.__agent1, self.__agent2
@@ -192,6 +196,58 @@ class Env:
                            (winning_rounds_agent1/rounds)*100, (winning_rounds_agent2/rounds)*100)
         print("In the total there is {} draws".format(draws))
         print("_"*100)
+
+    def get_reward(self, agent, row, col):
+        last_row, last_col = self.__dimension[0]-1, self.__dimension[1]-1
+        first_col = 0
+
+        if row == last_row and col == first_col:
+            if self.__board[row][col] == agent.get_disk() and self.__board[row][col + 1] == agent.get_disk() and \
+                    self.__board[row][col + 2] == agent.get_disk() and self.__board[row][col + 3] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col + 1] == agent.get_disk() \
+                    and self.__board[row][col + 2] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col + 1] == agent.get_disk():
+                return 0
+            else:
+                return 0
+
+        if row == last_row and col == last_col:
+            if self.__board[row][col] == agent.get_disk() and self.__board[row][col - 1] == agent.get_disk() and \
+                    self.__board[row][col - 2] == agent.get_disk() and self.__board[row][col - 3] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col - 1] == agent.get_disk() \
+                    and self.__board[row][col - 2] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col - 1] == agent.get_disk():
+                return 0
+            else:
+                return 0
+
+        if row == 5 or row == 4:
+            if self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col] == agent.get_disk() and \
+                    self.__board[row - 2][col] == agent.get_disk() and self.__board[row - 3][col] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col] == agent.get_disk() and \
+                    self.__board[row - 2][col] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col] == agent.get_disk():
+                return 0
+            else:
+                return 0
+
+        if row == 0 or row == 1:
+            if self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk() and \
+                    self.__board[row + 2][col] == agent.get_disk() and self.__board[row + 3][col] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk() and \
+                    self.__board[row + 2][col] == agent.get_disk():
+                return 0
+            elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk():
+                return 0
+            else:
+                return 0
 
     def reward_visualization(self, reward1, reward2):
         fig, (ax1, ax2) = plt.subplots(1, 2)
@@ -232,8 +288,8 @@ class Env:
 
     @staticmethod
     def battle_result(agent1_name, agent2_name, winning_rate1, winning_rate2):
-        s = '{} Win percentage: {} % \n{} Win percentage: {} %'.format(agent1_name, round(winning_rate1, 2), agent2_name,
-                                                                      round(winning_rate2, 2))
+        s = '{} Win percentage: {} % \n{} Win percentage: {} %'.format(agent1_name, round(winning_rate1, 2),
+                                                                       agent2_name, round(winning_rate2, 2))
         print(s)
 
     @staticmethod
