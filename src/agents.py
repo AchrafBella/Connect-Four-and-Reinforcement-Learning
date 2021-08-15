@@ -3,16 +3,34 @@ from operator import itemgetter
 import itertools as it
 
 
-class Agent(object):
+class Agent:
     def __init__(self, agent_name, disk):
-        self.__agent_name = agent_name
-        self.__disk = disk
+        self._agent_name = agent_name
+        self._disk = disk
 
     def get_disk(self):
-        return self.__disk
+        return self._disk
 
     def get_agent_name(self):
-        return self.__agent_name
+        return self._agent_name
+
+
+class Human(Agent):
+    def __init__(self, agent_name, disk):
+        """
+        This is class is built in order to allow agent vs human
+        :param agent_name:
+        :param disk:
+        """
+        super(Human, self).__init__(agent_name, disk)
+
+    @staticmethod
+    def action(env):
+        col = int(input('Your turn choose a column: '))
+        while col not in [0, 1, 2, 3, 4, 5, 6]:
+            col = int(input('Your turn choose a column: '))
+        row = env.get_next_valid_location(col)
+        return row, col
 
 
 class RandomAgent(Agent):
@@ -32,13 +50,15 @@ class RandomAgent(Agent):
         for col_ in range(env.get_dimension()[1]):
             if env.get_state()[0][col_] == 0:
                 columns.append(col_)
-        try:
+
+        col = np.random.choice(columns)
+        row = env.get_next_valid_location(col)
+
+        while row is None:
             col = np.random.choice(columns)
-            for row in reversed(range(env.get_dimension()[0])):
-                if env.get_state()[row][col] == 0:
-                    return row, col
-        except Exception as e:
-            print("Unable to choose a move because of {}".format(e))
+            row = env.get_next_valid_location(col)
+
+        return row, col
 
 
 class AgentLeftMost(Agent):
@@ -170,6 +190,7 @@ class HeuristicAgent(Agent):
             row, col = 5, np.random.randint(0, 6)
             return row, col
         vacant_places = np.argwhere(env.get_state() == 0)
+        vacant_places = sorted(vacant_places, key=itemgetter(1))
         gs = it.groupby(vacant_places, key=itemgetter(1))
         try:
             valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
@@ -181,46 +202,18 @@ class HeuristicAgent(Agent):
 
 
 class GreedyAgent(Agent):
-    def __init__(self, agent_name, disk, epsilon=0.1, k=6, learning_rate=1):
-        super().__init__(agent_name, disk)
+    def __init__(self, agent_name, disk, epsilon=0.5, k=7):
         """
-        to decide which action is the base
-        we define Action-Values
-        Q(a) = E[r | A=a] = sum(r*P(r | A=a)) a£ self.action
-        our goal is to maximize the Q* = max( Q(a))
-        the value of an action is the expected reward when an action is taken
-        the reward is non stationary which make this a non stationary bandit problem
-        :param epsilon:
-        :param k:
-        :param learning_rate:
         :param agent_name:
         :param disk:
-
+        :param epsilon:
+        :param k:
         """
+        super().__init__(agent_name, disk)
         self.__epsilon = epsilon                   # Epsilon-greedy policy
         self.__k = k                               # number of actions
-        self.__Q = np.zeros(self.__k)               # action values
-        self.__action = list(range(self.__k))      # the actions
         self.__count_actions = np.zeros(self.__k)  # the count of the previous actions
-        self.learning_rate = learning_rate
-        self.__last_action = None
-
-        self.__rewards = list()                    # the total rewards
-
-    def reset(self):
-        self.__Q = np.ones(self.__k)
-        self.__action = list(range(self.__k))
-        self.__count_actions = np.zeros(self.__k)
-        self.__last_action = None
-
-    def get_last_action(self):
-        return self.__last_action
-
-    def set_last_action(self, last_action):
-        self.__last_action = last_action
-
-    def get_count_actions(self):
-        return self.__count_actions
+        self.__Q = np.zeros(self.__k)              # action values
 
     def get_action_values(self):
         return self.__Q
@@ -228,59 +221,25 @@ class GreedyAgent(Agent):
     def initialize_action_values(self, action_values):
         self.__Q = action_values
 
-    def get_total_reward(self):
-        return sum(self.__rewards)
-
-    def compute_action_values(self, reward):
-        """
-        The incremental update rule action-value Q for each (action a, reward r):
-        n += 1
-        Q(a) <- Q(a) + 1/n * (r - Q(a))
-        where:
-        n = number of times action "a" was performed
-        Q(a) = value estimate of action "a"
-        r(a) = reward of sampling action bandit (bandit) "a"
-        :param reward:
-        :return:
-        """
-        self.__count_actions[self.__last_action] += 1
-        q_d = reward - self.__Q[self.__last_action]
-        q_m = self.learning_rate * self.__count_actions[self.__last_action]
-        self.__Q[self.__last_action] += q_d / q_m
+    def compute_action_values(self, action, reward):
+        self.__count_actions[action] += 1
+        self.__Q[action] += (reward - self.__Q[action])/self.__count_actions[action]
 
     def epsilon_greedy_policy(self):
-        """
-        the agent has the ability to choose either a greedy action or non-greedy action
-        :return:
-        """
         if np.random.random() < self.__epsilon:
-            action = np.random.choice(self.__action)
+            return np.random.randint(self.__k)
         else:
-            action = np.argmax(self.__Q)
-        self.__last_action = action
-        return action
+            return np.random.choice(np.flatnonzero(self.__Q == self.__Q.max()))
 
-    def action(self, state, dimension):
-        if self.__last_action is None:
-            col = np.random.choice(self.__action)
-        else:
-            col = self.epsilon_greedy_policy()
-        row = 0
+    def action(self, env):
+        col = self.epsilon_greedy_policy()
+        row = env.get_next_valid_location(col)
+
         while row is None:
-            try:
-                for _row in reversed(range(dimension[0])):
-                    if state[_row][col] == 0:
-                        row = _row
-                        break
-                        pass
-                    if row is None:
-                        col = self.epsilon_greedy_policy()
-                        pass
-                    pass
-                pass
-            except Exception as e:
-                print("Couldn't choose a row or column because of {}".format(e))
-        self.__last_action = col
-        reward = 5
-        self.compute_action_values(reward)
+            col = self.epsilon_greedy_policy()
+            row = env.get_next_valid_location(col)
+
+        reward = env.get_reward(self, row, col)
+        self.compute_action_values(col, reward)
+
         return row, col
