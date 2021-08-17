@@ -62,6 +62,9 @@ This figure represents the result of the battle between the agents, the percenta
 ![image](https://user-images.githubusercontent.com/52492864/128951936-59f8204c-71a9-4c0a-8399-3deaeb97c0c9.png)
 
 
+![image](https://user-images.githubusercontent.com/52492864/129815344-391c8c58-a2ef-4b7b-aeff-8babc158a438.png)
+
+
 
 License
 -----------
