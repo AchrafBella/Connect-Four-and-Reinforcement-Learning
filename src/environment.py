@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from agent_greedy import GreedyAgent
 
 
 class Env:
@@ -131,6 +132,19 @@ class Env:
                 pass
             pass
 
+    def get_reward(self, agent):
+        other_agent = self.__agent2 if agent == self.__agent1 else self.__agent1
+        reward = 0
+        if self.check_game_over():
+            reward -= 10
+        elif self.check_wining_move(agent):
+            reward += 1
+        elif self.check_wining_move(other_agent):
+            reward -= 1
+        else:
+            reward += 1/42
+        return reward
+
     def play_round(self):
         """
         * we should set who play first randomly
@@ -160,12 +174,48 @@ class Env:
 
             # self.round_result(first_player.get_agent_name(), turn, row1, col1)
             # self.round_result(second_player.get_agent_name(), turn, row2, col2)
-            self.display_board()
 
         if first_player == self.__agent2 and second_player == self.__agent1:
             first_player, second_player = self.__agent1, self.__agent2
 
         return first_player, second_player
+
+    def __run__(self, rounds):
+        winning_rounds_agent1, winning_rounds_agent2 = 0, 0
+        draws = 0
+        utility = 0
+        action_total_count = np.zeros(self.__dimension[1])
+
+        for _ in range(rounds):
+            self.reset_configuration()
+
+            agent1, agent2 = self.play_round()
+
+            if isinstance(agent1, GreedyAgent):
+                reward = self.get_reward(agent1)
+                agent1.compute_action_values(agent1.get_last_action(), reward)
+                agent1.initialize_action_values(agent1.get_action_values())
+                utility += reward
+                action_total_count[agent1.get_last_action()] += 1
+                pass
+            if isinstance(agent2, GreedyAgent):
+                reward = self.get_reward(agent2)
+                agent2.compute_action_values(agent2.get_last_action(), reward)
+                agent2.initialize_action_values(agent2.get_action_values())
+                agent2.initialize_action_values(agent2.get_action_values())
+                utility += reward
+                action_total_count[agent1.get_last_action()] += 1
+                pass
+
+            winning_rounds_agent1 = self.winning_rate(agent1, winning_rounds_agent1)
+            winning_rounds_agent2 = self.winning_rate(agent2, winning_rounds_agent2)
+
+        self.battle_result(self.__agent1.get_agent_name(), self.__agent2.get_agent_name(),
+                               (winning_rounds_agent1 / rounds) * 100, (winning_rounds_agent2 / rounds) * 100)
+        print("In the total there is {} draws".format(draws))
+        print("_"*100)
+
+        return utility, action_total_count
 
     def run(self, rounds=1):
         """
@@ -192,89 +242,6 @@ class Env:
                            (winning_rounds_agent1/rounds)*100, (winning_rounds_agent2/rounds)*100)
         print("In the total there is {} draws".format(draws))
         print("_"*100)
-
-    def get_reward(self, agent, row, col):
-        last_row, last_col = self.__dimension[0]-1, self.__dimension[1]-1
-        first_col = 0
-
-        if row == last_row and col == first_col:
-            if self.__board[row][col] == agent.get_disk() and self.__board[row][col + 1] == agent.get_disk() and \
-                    self.__board[row][col + 2] == agent.get_disk() and self.__board[row][col + 3] == agent.get_disk():
-                return 1
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col + 1] == agent.get_disk() \
-                    and self.__board[row][col + 2] == agent.get_disk():
-                return 0.4
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col + 1] == agent.get_disk():
-                return 0.2
-            else:
-                return 0
-
-        if row == last_row and col == last_col:
-            if self.__board[row][col] == agent.get_disk() and self.__board[row][col - 1] == agent.get_disk() and \
-                    self.__board[row][col - 2] == agent.get_disk() and self.__board[row][col - 3] == agent.get_disk():
-                return 1
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col - 1] == agent.get_disk() \
-                    and self.__board[row][col - 2] == agent.get_disk():
-                return 0.4
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row][col - 1] == agent.get_disk():
-                return 0.2
-            else:
-                return 0
-
-        if row == 5 or row == 4:
-            if self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col] == agent.get_disk() and \
-                    self.__board[row - 2][col] == agent.get_disk() and self.__board[row - 3][col] == agent.get_disk():
-                return 1
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col] == agent.get_disk() and \
-                    self.__board[row - 2][col] == agent.get_disk():
-                return 0.8
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col] == agent.get_disk():
-                return 0.6
-            else:
-                return 0
-
-        if row == 0 or row == 1:
-            if self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk() and \
-                    self.__board[row + 2][col] == agent.get_disk() and self.__board[row + 3][col] == agent.get_disk():
-                return 1
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk() and \
-                    self.__board[row + 2][col] == agent.get_disk():
-                return 0.8
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk():
-                return 0.6
-            else:
-                return 0
-
-        # check negative diagonal
-        if (row == 5 or row == 4 or row == 3) and col >= 3:
-            if self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col + 1] == agent.get_disk() and \
-                    self.__board[row - 2][col + 2] == agent.get_disk() and self.__board[row - 3][col + 2] == \
-                    agent.get_disk():
-                return 1
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col + 1] == agent.get_disk() and \
-                    self.__board[row - 2][col + 2] == agent.get_disk():
-                return 0.8
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row - 1][col + 1] == agent.get_disk():
-                return 0.6
-            else:
-                return 0
-
-        # check positive diagonal
-        if (row == 5 or row == 4 or row == 3) and col <= 3:
-            if self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col + 1] == agent.get_disk() and \
-                    self.__board[row + 2][col + 2] == agent.get_disk() and self.__board[row + 3][col + 3] == \
-                    agent.get_disk():
-                return 1
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col + 1] == agent.get_disk() and \
-                    self.__board[row + 2][col + 2] == agent.get_disk():
-                return 0.8
-            elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col + 1] == agent.get_disk():
-                return 0.6
-            else:
-                return 0
-
-        else:
-            return 0
 
     def reward_visualization(self, reward1, reward2):
         fig, (ax1, ax2) = plt.subplots(1, 2)

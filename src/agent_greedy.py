@@ -16,6 +16,11 @@ class GreedyAgent(Agent):
         self.__count_actions = np.zeros(self.__k)  # the count of the previous actions
         self.__Q = np.zeros(self.__k)              # action values
 
+        self.__last_action = None
+
+    def get_last_action(self):
+        return self.__last_action
+
     def get_action_values(self):
         return self.__Q
 
@@ -39,7 +44,5 @@ class GreedyAgent(Agent):
         while row is None:
             col = self.epsilon_greedy_policy()
             row = env.get_next_valid_location(col)
-
-        reward = env.get_reward(self, row, col)
-        self.compute_action_values(col, reward)
+        self.__last_action = col
         return row, col
