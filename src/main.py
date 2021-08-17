@@ -1,12 +1,10 @@
 from environment import Env
-from agents import RandomAgent, AgentLeftMost, HeuristicAgent, GreedyAgent, Human
-import matplotlib.pyplot as plt
-import numpy as np
-
+from agent_greedy import GreedyAgent
+from agent_random import RandomAgent
 
 if __name__ == "__main__":
     randomAgent = RandomAgent("RandomAgent", 1)
-    greedyAgent = Human("Achraf", 2)
+    greedyAgent = GreedyAgent("greedyAgent", 2)
 
     env1 = Env(agents={'agent1': randomAgent, 'agent2': greedyAgent})
     env1.play_round()

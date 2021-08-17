@@ -158,12 +158,9 @@ class Env:
             if self.check_wining_move(second_player):
                 break
 
+            # self.round_result(first_player.get_agent_name(), turn, row1, col1)
+            # self.round_result(second_player.get_agent_name(), turn, row2, col2)
             self.display_board()
-
-            self.round_result(first_player.get_agent_name(), turn, row1, col1)
-            self.round_result(second_player.get_agent_name(), turn, row2, col2)
-            print("_"*50)
-        self.display_board()
 
         if first_player == self.__agent2 and second_player == self.__agent1:
             first_player, second_player = self.__agent1, self.__agent2
@@ -239,12 +236,12 @@ class Env:
         if row == 0 or row == 1:
             if self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk() and \
                     self.__board[row + 2][col] == agent.get_disk() and self.__board[row + 3][col] == agent.get_disk():
-                return 0
+                return 1
             elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk() and \
                     self.__board[row + 2][col] == agent.get_disk():
-                return 0
+                return 0.8
             elif self.__board[row][col] == agent.get_disk() and self.__board[row + 1][col] == agent.get_disk():
-                return 0
+                return 0.6
             else:
                 return 0
 
@@ -275,6 +272,9 @@ class Env:
                 return 0.6
             else:
                 return 0
+
+        else:
+            return 0
 
     def reward_visualization(self, reward1, reward2):
         fig, (ax1, ax2) = plt.subplots(1, 2)
