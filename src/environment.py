@@ -141,8 +141,6 @@ class Env:
             reward += 1
         elif self.check_wining_move(other_agent):
             reward -= 1
-        else:
-            reward += 1/42
         return reward
 
     def play_round(self):
@@ -150,24 +148,27 @@ class Env:
         * we should set who play first randomly
         * As the first player goes first we should check if he won and then assign the score
         * If the first player didn't won in his turn then we check for the second player and we assign the score
-        * we set max_turn to 21 because the maximum number of vacant places is 42 and we play twice
+        * we set max_turn to 21 because the maximum number of vacant places is 42
         :return:
         """
 
         first_player = np.random.choice([self.__agent1, self.__agent2])
         second_player = self.__agent2 if first_player == self.__agent1 else self.__agent1
         max_turn = 21  # finite states
+        reward1, reward2 = 0, 0
 
         for turn in range(max_turn):
 
             row1, col1 = first_player.action(self)
             self.__drop_disk(row1, col1, first_player.get_disk())
+            reward1 += 1/42
 
             if self.check_wining_move(first_player):
                 break
 
             row2, col2 = second_player.action(self)
             self.__drop_disk(row2, col2, second_player.get_disk())
+            reward2 += 1/42
 
             if self.check_wining_move(second_player):
                 break
@@ -177,8 +178,9 @@ class Env:
 
         if first_player == self.__agent2 and second_player == self.__agent1:
             first_player, second_player = self.__agent1, self.__agent2
+            reward1, reward2 = reward1, reward2
 
-        return first_player, second_player
+        return first_player, second_player, reward1, reward2
 
     def __run__(self, rounds):
         winning_rounds_agent1, winning_rounds_agent2 = 0, 0
@@ -189,23 +191,22 @@ class Env:
         for _ in range(rounds):
             self.reset_configuration()
 
-            agent1, agent2 = self.play_round()
+            agent1, agent2, reward1, reward2 = self.play_round()
 
             if isinstance(agent1, GreedyAgent):
-                reward = self.get_reward(agent1)
-                agent1.compute_action_values(agent1.get_last_action(), reward)
+                reward1 += self.get_reward(agent1)
+                agent1.compute_action_values(agent1.get_last_action(), reward1)
                 agent1.initialize_action_values(agent1.get_action_values())
-                utility += reward
+                utility += reward1
                 action_total_count[agent1.get_last_action()] += 1
                 pass
-            if isinstance(agent2, GreedyAgent):
-                reward = self.get_reward(agent2)
-                agent2.compute_action_values(agent2.get_last_action(), reward)
+            elif isinstance(agent2, GreedyAgent):
+                reward2 += self.get_reward(agent2)
+                agent2.compute_action_values(agent2.get_last_action(), reward2)
                 agent2.initialize_action_values(agent2.get_action_values())
                 agent2.initialize_action_values(agent2.get_action_values())
-                utility += reward
+                utility += reward2
                 action_total_count[agent1.get_last_action()] += 1
-                pass
 
             winning_rounds_agent1 = self.winning_rate(agent1, winning_rounds_agent1)
             winning_rounds_agent2 = self.winning_rate(agent2, winning_rounds_agent2)
@@ -215,7 +216,7 @@ class Env:
         print("In the total there is {} draws".format(draws))
         print("_"*100)
 
-        return utility, action_total_count
+        return winning_rounds_agent1, winning_rounds_agent2, utility, action_total_count
 
     def run(self, rounds=1):
         """
