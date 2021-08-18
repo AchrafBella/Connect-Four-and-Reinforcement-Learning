@@ -59,11 +59,13 @@ Results
 -----------
 This figure represents the result of the battle between the agents, the percentage of winning is the result of 500 play.
 
+
 ![image](https://user-images.githubusercontent.com/52492864/128951936-59f8204c-71a9-4c0a-8399-3deaeb97c0c9.png)
 
+By modeling the game connect 4 by the problem of k-armed bandit problem, I created the greedy agent that use the concept of epslion policy to play a piece.
+the figure below shows the rate of winning for this agent against the HeuristicAgent, LeftMostAgent and RandomAgent with tuning parameters.
 
-![image](https://user-images.githubusercontent.com/52492864/129815344-391c8c58-a2ef-4b7b-aeff-8babc158a438.png)
-
+![image](https://user-images.githubusercontent.com/52492864/129980333-518f412b-db70-46ac-b6b5-53f30e8c428e.png)
 
 
 License
