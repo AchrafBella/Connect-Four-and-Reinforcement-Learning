@@ -48,10 +48,8 @@ Exemple to run:
 -----------
 ```python
 gent1 = HeuristicAgent('hur agent 1', 1)
-agent1_ = AgentLeftMost('hur agent 2', 2)
-
+agent1_ = AgentLeftMost('leftmost agent 2', 2)
 env = Env(agents={'agent1': agent1, 'agent2': agent1_})
- 
 env.run(rounds=500)
 ```
 
