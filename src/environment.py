@@ -79,8 +79,7 @@ class Env:
          This function check if all the value are full, if it's the case then game is over.
         :return:
         """
-        if not np.any(self.__board == 0):
-            return True
+        return not np.any(self.__board == 0)
 
     def check_wining_move(self, agent):
         """
@@ -137,10 +136,12 @@ class Env:
         reward = 0
         if self.check_game_over():
             reward -= 10
-        elif self.check_wining_move(agent):
+        elif self.__winner == agent:
             reward += 1
-        elif self.check_wining_move(other_agent):
+        elif self.__winner == other_agent:
             reward -= 1
+        else:
+            reward += 1/42
         return reward
 
     def play_round(self):
@@ -151,110 +152,65 @@ class Env:
         * we set max_turn to 21 because the maximum number of vacant places is 42
         :return:
         """
-
         first_player = np.random.choice([self.__agent1, self.__agent2])
         second_player = self.__agent2 if first_player == self.__agent1 else self.__agent1
-        max_turn = 21  # finite states
         reward1, reward2 = 0, 0
+        first_player_disk, second_player_disk = first_player.get_disk(), second_player.get_disk()
 
-        for turn in range(max_turn):
+        for turn in range(21):
 
             row1, col1 = first_player.action(self)
-            self.__drop_disk(row1, col1, first_player.get_disk())
-            reward1 += 1/42
+            self.__drop_disk(row1, col1, first_player_disk)
+            reward1 += self.get_reward(first_player)
 
             if self.check_wining_move(first_player):
+                reward1 += self.get_reward(first_player)
                 break
 
             row2, col2 = second_player.action(self)
-            self.__drop_disk(row2, col2, second_player.get_disk())
-            reward2 += 1/42
+            self.__drop_disk(row2, col2, second_player_disk)
+            reward2 += self.get_reward(second_player)
 
             if self.check_wining_move(second_player):
+                reward2 += self.get_reward(second_player)
                 break
-
-            # self.round_result(first_player.get_agent_name(), turn, row1, col1)
-            # self.round_result(second_player.get_agent_name(), turn, row2, col2)
 
         if first_player == self.__agent2 and second_player == self.__agent1:
             first_player, second_player = self.__agent1, self.__agent2
-            reward1, reward2 = reward1, reward2
+            reward1, reward2 = reward2, reward1
 
         return first_player, second_player, reward1, reward2
 
-    def __run__(self, rounds):
-        winning_rounds_agent1, winning_rounds_agent2 = 0, 0
+    def run(self, rounds):
         draws = 0
-        utility = 0
-        action_total_count = np.zeros(self.__dimension[1])
+        winning_rate1, winning_rate2 = 0, 0
+        utility_agent1, utility_agent2 = [], []
+        action_total_count = np.zeros(self.__dimension[1]) if isinstance(self.__agent1, GreedyAgent) else None
 
         for _ in range(rounds):
             self.reset_configuration()
 
             agent1, agent2, reward1, reward2 = self.play_round()
 
+            utility_agent1.append(reward1)
+            utility_agent2.append(reward2)
+
+            winning_rate1 = self.winning_rate(agent1, winning_rate1)
+            winning_rate2 = self.winning_rate(agent2, winning_rate2)
+
+            draws += 1 if self.check_game_over() else 0
+
             if isinstance(agent1, GreedyAgent):
                 reward1 += self.get_reward(agent1)
                 agent1.compute_action_values(agent1.get_last_action(), reward1)
                 agent1.initialize_action_values(agent1.get_action_values())
-                utility += reward1
-                action_total_count[agent1.get_last_action()] += 1
-                pass
-            elif isinstance(agent2, GreedyAgent):
-                reward2 += self.get_reward(agent2)
-                agent2.compute_action_values(agent2.get_last_action(), reward2)
-                agent2.initialize_action_values(agent2.get_action_values())
-                agent2.initialize_action_values(agent2.get_action_values())
-                utility += reward2
                 action_total_count[agent1.get_last_action()] += 1
 
-            winning_rounds_agent1 = self.winning_rate(agent1, winning_rounds_agent1)
-            winning_rounds_agent2 = self.winning_rate(agent2, winning_rounds_agent2)
-
-        self.battle_result(self.__agent1.get_agent_name(), self.__agent2.get_agent_name(),
-                               (winning_rounds_agent1 / rounds) * 100, (winning_rounds_agent2 / rounds) * 100)
-        print("In the total there is {} draws".format(draws))
-        print("_"*100)
-
-        return winning_rounds_agent1, winning_rounds_agent2, utility, action_total_count
-
-    def run(self, rounds=1):
-        """
-        The Run function for abject to see how the agent will do when they play many times
-        * the utility represent the total of the reward (not discounted)
-        :param rounds:
-        :return: 2 list of cumulative rewards
-        """
-        winning_rounds_agent1, winning_rounds_agent2 = 0, 0
-        draws = 0
-
-        for _ in range(rounds):
-            self.reset_configuration()
-
-            agent1, agent2 = self.play_round()
-
-            winning_rounds_agent1 = self.winning_rate(agent1, winning_rounds_agent1)
-            winning_rounds_agent2 = self.winning_rate(agent2, winning_rounds_agent2)
-
-            draws += 1 if self.check_game_over() else 0
-
-        # information to track the rounds
-        self.battle_result(self.__agent1.get_agent_name(),  self.__agent2.get_agent_name(),
-                           (winning_rounds_agent1/rounds)*100, (winning_rounds_agent2/rounds)*100)
-        print("In the total there is {} draws".format(draws))
-        print("_"*100)
-
-    def reward_visualization(self, reward1, reward2):
-        fig, (ax1, ax2) = plt.subplots(1, 2)
-        fig.suptitle('Cumulative reward for both agents in the {}'.format(self.__class__))
-        ax1.plot(reward1, 'tab:red')
-        ax1.set_title('agent 1')
-        ax1.set(xlabel='round', ylabel='reward')
-
-        ax2.plot(reward2, 'tab:green')
-        ax2.set_title('agent 2')
-        ax2.set(xlabel='round', ylabel='reward')
-        plt.show()
+        self.battle_result(self.__agent1.get_agent_name(), self.__agent2.get_agent_name(), winning_rate1, winning_rate2,
+                           rounds)
+        self.get_draws(draws, rounds)
+        if isinstance(self.__agent1, GreedyAgent):
+            return utility_agent1, utility_agent2, action_total_count
 
     def get_dimension(self):
         return self.__dimension
@@ -277,14 +233,21 @@ class Env:
         return winning_round
 
     @staticmethod
-    def round_result(agent_name, turn, row, col):
-        s = 'The {} in his {} turn drop a piece in row={}, col={}'.format(agent_name, turn, row, col)
+    def get_draws(draw, rounds):
+        s = "there is {}% of draws battles".format(draw / rounds)
         print(s)
 
     @staticmethod
-    def battle_result(agent1_name, agent2_name, winning_rate1, winning_rate2):
-        s = '{} Win percentage: {} % \n{} Win percentage: {} %'.format(agent1_name, round(winning_rate1, 2),
-                                                                       agent2_name, round(winning_rate2, 2))
+    def round_result(agent_name, turn, row, col):
+        s = 'The {} in his {} turn drop a piece in row={}, col={}'.format(agent_name.get_agent_name(), turn, row, col)
+        print(s)
+
+    @staticmethod
+    def battle_result(agent1_name, agent2_name, winning_rate1, winning_rate2, rounds):
+        s = '{}: Win percentage: {} % \n{}: Win percentage: {} %'.format(agent1_name,
+                                                                         round((winning_rate1/rounds)*100, 2),
+                                                                         agent2_name,
+                                                                         round((winning_rate2/rounds)*100, 2))
         print(s)
 
     @staticmethod
@@ -292,6 +255,13 @@ class Env:
         s = 'the max {}, the min {}, the mean {}'.format(max(cumulative_reward), min(cumulative_reward),
                                                          np.mean(cumulative_reward))
         print(s)
+
+    @staticmethod
+    def visualize_reward(reward):
+        plt.plot(reward, ".")
+        plt.xlabel("Step")
+        plt.ylabel("Average Reward")
+        plt.show()
 
 
 class PieceMisplaced(Exception):

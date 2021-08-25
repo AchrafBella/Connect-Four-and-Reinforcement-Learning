@@ -13,7 +13,8 @@ class Human(Agent):
     @staticmethod
     def action(env):
         col = int(input('Your turn choose a column: '))
-        while col not in [0, 1, 2, 3, 4, 5, 6]:
+        actions = [0, 1, 2, 3, 4, 5, 6]
+        while col not in actions:
             col = int(input('Your turn choose a column: '))
         row = env.get_next_valid_location(col)
         return row, col

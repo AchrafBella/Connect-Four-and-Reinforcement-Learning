@@ -21,7 +21,7 @@ class HeuristicAgent(Agent):
         :param dimension:
         :return:
         """
-        weights = list()
+        weights = []
         last_row, last_col = dimension[0] - 1, dimension[1] - 1
         first_col = 0
         for pair in pairs:
@@ -113,10 +113,7 @@ class HeuristicAgent(Agent):
         vacant_places = np.argwhere(env.get_state() == 0)
         vacant_places = sorted(vacant_places, key=itemgetter(1))
         gs = it.groupby(vacant_places, key=itemgetter(1))
-        try:
-            valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
-            move = max(self.patterns(env.get_state(), valid_moves, env.get_dimension()), key=itemgetter(1))
-            row, col = move[0]
-            return row, col
-        except Exception as e:
-            print("Unable to choose a move because of {}".format(e))
+        valid_moves = [max(v, key=itemgetter(0)) for k, v in gs]
+        move = max(self.patterns(env.get_state(), valid_moves, env.get_dimension()), key=itemgetter(1))
+        row, col = move[0]
+        return row, col

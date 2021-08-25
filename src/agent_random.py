@@ -15,7 +15,7 @@ class RandomAgent(Agent):
         env
         :return:
         """
-        columns = list()
+        columns = []
         for col_ in range(env.get_dimension()[1]):
             if env.get_state()[0][col_] == 0:
                 columns.append(col_)
