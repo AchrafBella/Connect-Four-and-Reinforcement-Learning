@@ -56,6 +56,7 @@ env.run(rounds=500)
 Results
 -----------
 This figure represents the result of the battle between the agents, the percentage of winning is the result of 500 play.
+To test: test/demo1.py
 
 ![image](https://user-images.githubusercontent.com/52492864/130765819-8974ee34-c60e-4561-abdc-672c7ea1b3f8.png)
 
