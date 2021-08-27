@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from agent_greedy import GreedyAgent
 
 
@@ -141,7 +140,7 @@ class Env:
         elif self.__winner == other_agent:
             reward -= 1
         else:
-            reward += 1/42
+            reward += 0
         return reward
 
     def play_round(self):
@@ -165,6 +164,7 @@ class Env:
 
             if self.check_wining_move(first_player):
                 reward1 += self.get_reward(first_player)
+                reward2 += self.get_reward(second_player)
                 break
 
             row2, col2 = second_player.action(self)
@@ -172,6 +172,7 @@ class Env:
             reward2 += self.get_reward(second_player)
 
             if self.check_wining_move(second_player):
+                reward1 += self.get_reward(first_player)
                 reward2 += self.get_reward(second_player)
                 break
 
@@ -181,19 +182,14 @@ class Env:
 
         return first_player, second_player, reward1, reward2
 
-    def run(self, rounds):
+    def run(self, episodes):
         draws = 0
         winning_rate1, winning_rate2 = 0, 0
-        utility_agent1, utility_agent2 = [], []
-        action_total_count = np.zeros(self.__dimension[1]) if isinstance(self.__agent1, GreedyAgent) else None
 
-        for _ in range(rounds):
+        for episode in range(episodes):
             self.reset_configuration()
 
             agent1, agent2, reward1, reward2 = self.play_round()
-
-            utility_agent1.append(reward1)
-            utility_agent2.append(reward2)
 
             winning_rate1 = self.winning_rate(agent1, winning_rate1)
             winning_rate2 = self.winning_rate(agent2, winning_rate2)
@@ -204,13 +200,11 @@ class Env:
                 reward1 += self.get_reward(agent1)
                 agent1.compute_action_values(agent1.get_last_action(), reward1)
                 agent1.initialize_action_values(agent1.get_action_values())
-                action_total_count[agent1.get_last_action()] += 1
 
         self.battle_result(self.__agent1.get_agent_name(), self.__agent2.get_agent_name(), winning_rate1, winning_rate2,
-                           rounds)
-        self.get_draws(draws, rounds)
-        if isinstance(self.__agent1, GreedyAgent):
-            return utility_agent1, utility_agent2, action_total_count
+                           episodes)
+        self.get_draws(draws, episodes)
+        return winning_rate1, winning_rate2
 
     def get_dimension(self):
         return self.__dimension
@@ -255,13 +249,6 @@ class Env:
         s = 'the max {}, the min {}, the mean {}'.format(max(cumulative_reward), min(cumulative_reward),
                                                          np.mean(cumulative_reward))
         print(s)
-
-    @staticmethod
-    def visualize_reward(reward):
-        plt.plot(reward, ".")
-        plt.xlabel("Step")
-        plt.ylabel("Average Reward")
-        plt.show()
 
 
 class PieceMisplaced(Exception):
