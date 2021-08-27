@@ -24,7 +24,7 @@ The Agents:
 - Greedy Agent: this agent use the concept of Multi-Armed Bandit, he learns by playing and getting a reward
 - DRL Agent: using RL
 
-The reward system is as the following:
+As we are in the episodic tasks we have a terminal states (42 piece) so the reward should be the sum of all reward steps for that the reward system is as the following:
 - Each time the agent win a game, he will receive a reward of +1.
 - Each time the agent lost a game, he will punch by -1.
 - And -10 in case of draw.
@@ -33,7 +33,7 @@ The reward system is as the following:
 
 challenges
 -----------
-During the programming of the game, I aim to build a robust program that do not bug and able to handle exceptions to ensure  continuously the work of the program.
+During the programming of this game, I aim to build a robust program that do not bug and able to handle exceptions to ensure continuously the work of the program.
 Also, I optimized the program as much as the possible and that is shown by the way the variable is declared, the using of list with o(1) complexity for inserting, using POO paradigm especially with inheritance & polymorphism.
 I adapted the environment to all the agents which is not all easy task especially for the agents that use the learning methods.
 
