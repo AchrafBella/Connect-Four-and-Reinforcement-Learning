@@ -136,15 +136,16 @@ class Env:
         if self.check_game_over():
             reward -= 10
         elif self.__winner == agent:
-            reward += 1
+            reward += 10
         elif self.__winner == other_agent:
             reward -= 1
         else:
-            reward += 0
+            reward += 1/42
         return reward
 
     def play_round(self):
         """
+        play round is an episode
         * we should set who play first randomly
         * As the first player goes first we should check if he won and then assign the score
         * If the first player didn't won in his turn then we check for the second player and we assign the score
@@ -197,7 +198,6 @@ class Env:
             draws += 1 if self.check_game_over() else 0
 
             if isinstance(agent1, GreedyAgent):
-                reward1 += self.get_reward(agent1)
                 agent1.compute_action_values(agent1.get_last_action(), reward1)
                 agent1.initialize_action_values(agent1.get_action_values())
 

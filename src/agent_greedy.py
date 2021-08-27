@@ -45,8 +45,7 @@ class GreedyAgent(Agent):
         if np.random.random() < self.__epsilon:
             return np.random.randint(self.__k)
         else:
-            t = np.random.choice(np.flatnonzero(self.__Q == self.__Q.max()))
-            return t
+            return np.random.choice(np.flatnonzero(self.__Q == self.__Q.max()))
 
     def action(self, env):
         col = self.epsilon_greedy_policy()
