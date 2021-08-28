@@ -6,7 +6,7 @@ class RandomAgent(Agent):
     """"
     this agent represent a simple approach that consist of exploring the all the option.
     """
-    def __init__(self, agent_name, disk):
+    def __init__(self, disk, agent_name="Random agent"):
         super().__init__(agent_name, disk)
 
     @staticmethod

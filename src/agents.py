@@ -1,4 +1,7 @@
-class Agent:
+from abc import ABC
+
+
+class Agent(ABC):
     def __init__(self, agent_name, disk):
         self._agent_name = agent_name
         self._disk = disk

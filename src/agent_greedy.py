@@ -3,7 +3,7 @@ import numpy as np
 
 
 class GreedyAgent(Agent):
-    def __init__(self, agent_name, disk, step_size=None, epsilon=1, k=7):
+    def __init__(self, disk, agent_name="Greedy agent", step_size=None, epsilon=1, k=7):
         """
         I applied the k-armed bandit problem in the context of the game connect4
         i solved this problem using epsilon-greedy where we exploit with a rate of epsilon

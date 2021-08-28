@@ -16,12 +16,12 @@ class Env:
         :param dimension: the dimension represent the board limits
         :param agents: dict of agents
         """
+        self.__agent1 = agents.get('agent1', None)
+        self.__agent2 = agents.get('agent2', None)
+
         self.__dimension = dimension
         self.__board = np.zeros(self.__dimension)
         self.__winner = None
-
-        self.__agent1 = agents.get('agent1', None)
-        self.__agent2 = agents.get('agent2', None)
 
     def reset_configuration(self):
         """
@@ -30,7 +30,7 @@ class Env:
         self.__board = np.zeros(self.__dimension)
         self.__winner = None
 
-    def valid_location(self, row, column):
+    def is_valid_action(self, row, column):
         """
         :param row:
         :param column:
@@ -44,7 +44,7 @@ class Env:
         :return:
         """
         for row in reversed(range(self.__dimension[0])):
-            if self.valid_location(row, column):
+            if self.is_valid_action(row, column):
                 return row
 
     def __drop_disk(self, row, column, piece):
@@ -66,8 +66,8 @@ class Env:
         row = 5
         column = int(input('Your turn: please choose a column: '))
         if column >= 7 or column < 0 or np.all((self.__board != 0), axis=0)[column]:
-            raise PieceMisplaced("Please check the column you want to put your piece in")
-        if self.valid_location(row, column):
+            raise ValueError("Please check the column you want to put your piece in")
+        elif self.is_valid_action(row, column):
             self.__board[row][column] = piece
         else:
             row = self.get_next_valid_location(column)
@@ -136,7 +136,7 @@ class Env:
         if self.check_game_over():
             reward -= 10
         elif self.__winner == agent:
-            reward += 10
+            reward += 1
         elif self.__winner == other_agent:
             reward -= 1
         else:
@@ -157,7 +157,7 @@ class Env:
         reward1, reward2 = 0, 0
         first_player_disk, second_player_disk = first_player.get_disk(), second_player.get_disk()
 
-        for turn in range(21):
+        for _ in range(21):
 
             row1, col1 = first_player.action(self)
             self.__drop_disk(row1, col1, first_player_disk)
@@ -184,10 +184,9 @@ class Env:
         return first_player, second_player, reward1, reward2
 
     def run(self, episodes):
-        draws = 0
         winning_rate1, winning_rate2 = 0, 0
 
-        for episode in range(episodes):
+        for _ in range(episodes):
             self.reset_configuration()
 
             agent1, agent2, reward1, reward2 = self.play_round()
@@ -195,16 +194,12 @@ class Env:
             winning_rate1 = self.winning_rate(agent1, winning_rate1)
             winning_rate2 = self.winning_rate(agent2, winning_rate2)
 
-            draws += 1 if self.check_game_over() else 0
-
             if isinstance(agent1, GreedyAgent):
                 agent1.compute_action_values(agent1.get_last_action(), reward1)
                 agent1.initialize_action_values(agent1.get_action_values())
 
         self.battle_result(self.__agent1.get_agent_name(), self.__agent2.get_agent_name(), winning_rate1, winning_rate2,
                            episodes)
-        self.get_draws(draws, episodes)
-        return winning_rate1, winning_rate2
 
     def get_dimension(self):
         return self.__dimension
@@ -227,11 +222,6 @@ class Env:
         return winning_round
 
     @staticmethod
-    def get_draws(draw, rounds):
-        s = "there is {}% of draws battles".format(draw / rounds)
-        print(s)
-
-    @staticmethod
     def round_result(agent_name, turn, row, col):
         s = 'The {} in his {} turn drop a piece in row={}, col={}'.format(agent_name.get_agent_name(), turn, row, col)
         print(s)
@@ -249,8 +239,3 @@ class Env:
         s = 'the max {}, the min {}, the mean {}'.format(max(cumulative_reward), min(cumulative_reward),
                                                          np.mean(cumulative_reward))
         print(s)
-
-
-class PieceMisplaced(Exception):
-    """The piece misplaced please choose a column between 0 and 6"""
-    pass

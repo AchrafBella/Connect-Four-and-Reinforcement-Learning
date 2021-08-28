@@ -9,7 +9,7 @@ class HeuristicAgent(Agent):
     This agent use an heuristic that makes him choose wisely the place of piece by looking all the possible places
     he chooses the place with the high score
     """
-    def __init__(self, agent_name, disk):
+    def __init__(self, disk, agent_name="Heuristic agent"):
         super().__init__(agent_name, disk)
 
     def patterns(self, observation, pairs, dimension):

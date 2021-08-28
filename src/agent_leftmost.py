@@ -5,7 +5,7 @@ class AgentLeftMost(Agent):
     """"
     this agent use a strategy that consists of playing the piece on the left.
     """
-    def __init__(self, agent_name, disk):
+    def __init__(self, disk, agent_name="Left most agent"):
         super().__init__(agent_name, disk)
 
     @staticmethod

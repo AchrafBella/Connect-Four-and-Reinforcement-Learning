@@ -2,7 +2,7 @@ from agents import Agent
 
 
 class Human(Agent):
-    def __init__(self, agent_name, disk):
+    def __init__(self, disk, agent_name="Manual player"):
         """
         This is class is built in order to allow agent vs human
         :param agent_name:
