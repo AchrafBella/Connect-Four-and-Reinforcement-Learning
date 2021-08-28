@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class Agent(ABC):
@@ -11,3 +11,7 @@ class Agent(ABC):
 
     def get_agent_name(self):
         return self._agent_name
+
+    @abstractmethod
+    def action(self):
+        pass

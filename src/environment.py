@@ -1,9 +1,9 @@
 import numpy as np
 from agent_greedy import GreedyAgent
-
+from agent_Q_learning import QAgent
 
 class Env:
-    def __init__(self, agents, dimension=(6, 7)):
+    def __init__(self, agents):
         """
         This class represent the game environment
         We have to respect that the first drop of piece should be in the bottom
@@ -13,13 +13,12 @@ class Env:
         Each agents should at least have 2 attributes disk & agent_name (get_disk(), get_agent_name)
         and a function action with 2 parameters state & dimension that return row and column
 
-        :param dimension: the dimension represent the board limits
         :param agents: dict of agents
         """
         self.__agent1 = agents.get('agent1', None)
         self.__agent2 = agents.get('agent2', None)
 
-        self.__dimension = dimension
+        self.__dimension = (6, 7)
         self.__board = np.zeros(self.__dimension)
         self.__winner = None
 
@@ -198,6 +197,9 @@ class Env:
                 agent1.compute_action_values(agent1.get_last_action(), reward1)
                 agent1.initialize_action_values(agent1.get_action_values())
 
+            if isinstance(agent1,QAgent):
+                agent1.compute_q_function()
+
         self.battle_result(self.__agent1.get_agent_name(), self.__agent2.get_agent_name(), winning_rate1, winning_rate2,
                            episodes)
 
@@ -213,7 +215,7 @@ class Env:
     def count_disks_in_board(self):
         return np.count_nonzero(self.__board)
 
-    def display_board(self):
+    def render(self):
         print(*self.__board, sep='\n')
 
     def winning_rate(self, agent, winning_round):
