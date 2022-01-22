@@ -44,7 +44,7 @@ Requirements
 pip3 install -r requirements.txt (Python 3)
 ```
 
-Exemple to run: 
+Example to run: 
 -----------
 ```python
 gent1 = HeuristicAgent('hur agent 1', 1)
